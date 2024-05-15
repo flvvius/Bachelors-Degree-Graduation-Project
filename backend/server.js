@@ -2,6 +2,7 @@ const express = require("express");
 const env = require("dotenv");
 const {db} = require("./models");
 const cors = require('cors');
+const router = require('./routes')
 
 env.config();
 
@@ -23,6 +24,8 @@ app.use(
         enablePreflight: true
     })
 );
+
+app.use("/api", router);
 
 app.get("/reset", async (req,res) => {
     try {
