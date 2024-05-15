@@ -8,8 +8,11 @@ const db = new Sequelize({
     database: process.env.DATABASE || "Pontaj_APP",
     username: process.env.USERNAME || "root",
     password: process.env.PASSWORD || "",
+    host: 'localhost',
     logging: false,
     define: {
+    charset: 'utf8',
+    collate: 'utf8_general_ci',
     timestamps: false,
     freezeTableName: true
     }
