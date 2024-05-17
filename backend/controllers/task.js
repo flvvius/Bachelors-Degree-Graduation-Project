@@ -1,16 +1,39 @@
 const {task: TaskDB} = require('../models');
+const {user: UserDb} = require('../models');
+const {userTask: userTaskDB} = require('../models')
 
+// {include: [{model: userTaskDB, as: "legaturi"}]}
 
 const controller = {
 
     add: async (req, res) => {
-        const taskToCreate = req.body;
-        try {
-            await TaskDB.create(taskToCreate);
-            return res.status(200).send(taskToCreate);
-        } catch (err) {
-            return res.status(500).send(err.message);
+        const {taskToCreate, userIds} = req.body;
+      
+        for(let i = 0;i<userIds.length;i++){
+            let user = await userTaskDB.findByPk(userIds[i])
+            if(!user){
+                return res.status(400).json({
+                    message:"nu exista user"
+                })
+            }
         }
+        await TaskDB.create(taskToCreate).then(async(rez)=>{
+            const {id} = rez;
+            await userIds.forEach(element => {
+
+                let userTaskObj = {
+                    idUser: element,
+                    idTask: id
+                }
+
+                userTaskDB.create(userTaskObj);
+            });
+        }).catch((err)=> {
+            return res.status(500).send(err);
+        });
+
+        return res.status(200).json({message: "Ai asignat cu succes task-ul"});
+        
     },
 
     getAll: async (req, res) => {
