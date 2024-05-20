@@ -22,6 +22,21 @@ const controller = {
         }
     },
 
+    getAllAngajati: async (req, res) => {
+
+        try {
+            const angajati = await UserDb.findAll({
+                where: {
+                    esteAdmin: false
+                }
+            })
+            res.status(200).send(angajati);
+        } catch (err) {
+            res.status(500).send(err.message);
+        }
+
+    },
+
     getUserById: async (req, res) => {
         const id = req.params.id;
         try {
@@ -31,6 +46,26 @@ const controller = {
             res.status(500).send(err.message);
         }
     },
+
+    deleteUser: async (req, res) => {
+        const id = req.params.id;
+        try {
+
+            const user = await UserDb.findByPk(id);
+            if (!user) {
+                return res.status(400).json({message: "Nu exista user"});
+            }
+
+            await UserDb.destroy({
+                where: {
+                    id: id
+                }
+            });
+            return res.status(200).json({message: "User sters cu succes!"});
+        } catch (err) {
+            return res.status(500).send(err.message);
+        }
+    }
 
     // updateUser: async (req, res) => {
     //     const {userId} = req.params;

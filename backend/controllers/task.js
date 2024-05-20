@@ -1,3 +1,4 @@
+const { where } = require('sequelize');
 const {task: TaskDB} = require('../models');
 const {user: UserDb} = require('../models');
 const {userTask: userTaskDB} = require('../models')
@@ -10,12 +11,13 @@ const controller = {
         const {taskToCreate, userIds} = req.body;
       
         for(let i = 0;i<userIds.length;i++){
-            let user = await userTaskDB.findByPk(userIds[i])
+            let user = await UserDb.findByPk(userIds[i]) //console.log(user.dataValues.esteAdmin)
             if(!user){
                 return res.status(400).json({
                     message:"nu exista user"
                 })
-            }
+            } 
+            
         }
         await TaskDB.create(taskToCreate).then(async(rez)=>{
             const {id} = rez;
@@ -45,6 +47,32 @@ const controller = {
         }
     },
 
+    // to do
+    getEsteTaskColectiv: async (req, res) => {
+
+        const id = req.params.id;
+
+        try {
+            const persoaneCareAuTaskulAsignat = await userTaskDB.findAll({
+                where: {
+                    idTask: id
+                }
+            });
+            if (persoaneCareAuTaskulAsignat.length > 0) {
+                if (persoaneCareAuTaskulAsignat.length > 1) {
+                    return res.status(200).json({message: "task colectiv"});
+                } else {
+                    return res.status(200).json({message: "task individual"});
+                }
+            } else {
+                return res.status(400).json({message: "task neasignat!"});
+            }
+        } catch (err) {
+            return res.status(500).send(err.message);
+        }
+
+    },
+
     getTaskById: async (req, res) => {
         const id = req.params.id;
         try {
@@ -54,6 +82,21 @@ const controller = {
             res.status(500).send(err.message);
         }
     },
+
+    update: async (req, res) => {
+        const {id} = req.params; // params sau body?
+        const payload = req.body;
+
+        try {
+            await TaskDB.update(payload, {
+                where: {id: id}
+            })
+            return res.status(200).json({message: "Task updated successfully!"});
+        } catch(err) {
+            return res.status(500).send(err.message);
+        }
+
+    }
 
     // updateTask: async (req, res) => {
     //     const {userId} = req.params;

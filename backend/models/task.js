@@ -27,8 +27,7 @@ const Task = (db, DataTypes) => db.define("Task", {
     },
 
     data_finalizare: {
-        type: DataTypes.DATE,
-        allowNull: false
+        type: DataTypes.DATE
     }
 })
 
