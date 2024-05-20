@@ -3,12 +3,17 @@ const env = require("dotenv");
 const {db} = require("./models");
 const cors = require('cors');
 const router = require('./routes')
+const auth = require('./config/auth');
+const session = require("express-session");
+const passport = require('passport');
 
 env.config();
 
 const app = express();
 
 const port = process.env.PORT || 8080;
+
+process.env.TZ = 'Europe/Bucharest';
 
 app.use(express.json());
 app.use(express.urlencoded({
@@ -24,6 +29,21 @@ app.use(
         enablePreflight: true
     })
 );
+
+app.use(session({
+    secret: "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",
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+        maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    }
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+//app.use(passport.authenticate("session"));
+
 
 app.use("/api", router);
 
