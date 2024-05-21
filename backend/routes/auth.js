@@ -17,11 +17,15 @@ authRouter.get("/succes", (req, res) => {
     }
 })
 
-authRouter.get("/redirect", passport.authenticate("google", {failureRedirect: "/http://localhost:3000/login", successRedirect: "http://localhost:3000/home"}));
+authRouter.get("/redirect", passport.authenticate("google", {failureRedirect: "/http://localhost:3000/login"}), (req, res) => {
+    res.redirect('http://localhost:3000/home');
+});
 
 authRouter.get("/logout", (req, res) => {
-    req.logout();
-    res.redirect("http://localhost:3000/login");
+    req.logout(function(err) {
+        if (err) { return next(err); }
+        res.redirect("http://localhost:3000/login");
+    });
 })
 
 module.exports = authRouter;
