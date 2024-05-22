@@ -11,7 +11,6 @@ export function AuthProvider({ children }) {
     axios.get('http://localhost:8080/api/auth/succes', {withCredentials: true})
       .then(response => {
         setUser(response.data.user);
-        console.log(response.data.user);
         setLoading(false);
       })
       .catch(error => {

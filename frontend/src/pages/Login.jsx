@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import styles from "../styles/Login.module.css";
 // import axios from "axios";
 
@@ -18,9 +17,6 @@ export default function Login() {
 						<img src="./images/google.png" alt="google icon" />
 						<span>Sign in with Google</span>
 					</button>
-					<p className={styles.text}>
-						New Here ? <Link to="/signup">Sign Up</Link>
-					</p>
 			</div>
 		</div>
     );

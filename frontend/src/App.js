@@ -22,7 +22,7 @@ function App() {
                     <Link to="/home">Home</Link>
                 </li>
                 <li>
-                    <Link to="/login">Login</Link>
+                    <Link to="/">Login</Link>
                 </li>
             </ul>
         </nav>
@@ -31,10 +31,10 @@ function App() {
             exact
             path="/home"
             element={<ProtectedRoute>
-              {user.esteAdmin ? <HomeAdmin user={user} /> : <HomeUser user={user} />}
+              {user && user.esteAdmin ? <HomeAdmin user={user} /> : user ? <HomeUser user={user} /> : <Login /> }
             </ProtectedRoute>}
           />
-          <Route path="/login" element={<Login />} />
+          <Route path="/" element={<Login />} />
         </Routes>
     </Router>
 );
