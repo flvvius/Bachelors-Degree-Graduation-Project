@@ -2,12 +2,13 @@ import { useEffect, useState } from 'react'
 import styles from '../styles/Home.module.css'
 import axios from 'axios'
 import Task from '../components/Task'
+import Feedback from '../components/Feedback'
+import Pontaj from '../components/Pontaj'
 
 const HomeUser = ({user}) => {
 
-    // const currentDate = ...
-
     const [tasks, setTasks] = useState([]);
+    const [showModal, setShowModal] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -19,29 +20,48 @@ const HomeUser = ({user}) => {
         fetchData();
     }, [user.id])
 
-    console.log(tasks);
+    const updateTask = (updatedTask) => {
+        setTasks(prevTasks => prevTasks.map(
+            task => task.id === updatedTask.id ? updatedTask : task
+        ));
+    };
+
+    const handleOpenModal = () => {
+        setShowModal(true);
+    };
+    
+    const handleCloseModal = () => {
+        setShowModal(false);
+    };
 
     return (
         <div className={styles.main_container}>
             <div className={styles.pontaj_container}>                   {/* ilustrare grafica pt pontaj */ }
-                <h1 className={styles.ceva}>Pontaj</h1> 
-
-                <button>Check-In</button>
-                <button>Check-Out</button>    
+                
+                <Pontaj />
 
             </div>
 
             <div className={styles.tasks_container}>
                 <div className={styles.active_tasks_container}>
                     {
-                        tasks.map(task => (
-                            <Task key={task.id} task={task} /> )
+                        tasks.filter(task => task.data_finalizare == null).map(task => (
+                            <Task key={task.id} task={task} updateTask={updateTask} user={user} /> )
                         )
                     }
                 </div>
                 <div className={styles.finished_tasks_container}>
-                    
+                {
+                    tasks.filter(task => task.data_finalizare != null).map(task => (
+                        <Task key={task.id} task={task} updateTask={updateTask} user={user} /> )
+                    )
+                }
                 </div>
+            </div>
+
+            <div className={styles.feedback_container}>
+                <button onClick={handleOpenModal}>Acorda feedback pentru ziua de lucru</button>
+                <Feedback show={showModal} onClose={handleCloseModal} userId={user.id} taskId={null} />
             </div>
 
         </div>

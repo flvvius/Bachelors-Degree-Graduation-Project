@@ -21,15 +21,16 @@ const Feedback = (db, DataTypes) => db.define("Feedback", {
         allowNull: false
     },
 
-    idAngajator: {
+    idAngajat: {
         type: DataTypes.INTEGER,
         allowNull: false
     },
 
-    idAngajat: {
+    idTask: {
         type: DataTypes.INTEGER,
-        allowNull: false
+        allowNull: true
     }
+
 })
 
 module.exports = Feedback;

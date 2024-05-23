@@ -11,3 +11,7 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.completed_task {
+  background-color: rgba(102, 51, 153, 0.183);
+}

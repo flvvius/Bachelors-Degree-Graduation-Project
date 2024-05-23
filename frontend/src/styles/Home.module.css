@@ -5,3 +5,8 @@
 .pontaj_container {
 
 }
+
+.tasks_container {
+    display: flex;
+    justify-content: space-around;
+}
