@@ -10,6 +10,7 @@ import ManageFeedback from './pages/ManageFeedback.jsx';
 import ViewTasks from './pages/ViewTasks.jsx';
 import Statistics from './pages/Statistics.jsx';
 import { ChakraProvider } from '@chakra-ui/react'
+import Layout from "./components/Layout";
 
 function App() {
 
@@ -22,16 +23,7 @@ function App() {
   return (
     <ChakraProvider>
       <Router>
-          <nav>
-              <ul>
-                  <li>
-                      <Link to="/home">Home</Link>
-                  </li>
-                  <li>
-                      <Link to="/">Login</Link>
-                  </li>
-              </ul>
-          </nav>
+        <Layout>
           <Routes>
             <Route
               exact
@@ -45,6 +37,7 @@ function App() {
             <Route path="/tasks" element={<ProtectedRoute>{<ViewTasks user={user} />}</ProtectedRoute>} />
             <Route path="/statistics" element={<ProtectedRoute>{<Statistics />}</ProtectedRoute>} />
           </Routes>
+        </Layout>
       </Router>
     </ChakraProvider>
 );

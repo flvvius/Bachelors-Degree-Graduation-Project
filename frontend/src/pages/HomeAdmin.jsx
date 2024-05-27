@@ -3,7 +3,7 @@ import axios from 'axios';
 import User from '../components/User';
 import UploadTask from '../components/UploadTask';
 import { useNavigate } from 'react-router-dom';
-import { Box, Button, Flex, Heading, Stack, VStack, useColorMode, useColorModeValue } from '@chakra-ui/react';
+import { Box, Button, Flex, Heading, Stack, VStack, useColorModeValue } from '@chakra-ui/react';
 
 const HomeAdmin = ({ user }) => {
     const [users, setUsers] = useState([]);
@@ -58,7 +58,6 @@ const HomeAdmin = ({ user }) => {
         navigate('/statistics');
     };
 
-    const { toggleColorMode } = useColorMode();
     const bg = useColorModeValue('gray.100', 'gray.700');
     const color = useColorModeValue('black', 'white');
 
@@ -66,9 +65,6 @@ const HomeAdmin = ({ user }) => {
         <Box p={5} bg={bg} minH="100vh">
             <Flex justify="space-between" align="center" mb={5}>
                 <Heading color={color}>Admin Dashboard</Heading>
-                <Button onClick={toggleColorMode}>
-                    Toggle {color === 'black' ? 'Dark' : 'Light'}
-                </Button>
             </Flex>
             <Stack spacing={10} align="center">
                 <VStack spacing={4} w="100%" maxW="800px">
