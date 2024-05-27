@@ -8,34 +8,35 @@ const {userTask: userTaskDB} = require('../models')
 const controller = {
 
     add: async (req, res) => {
-        const {taskToCreate, userIds} = req.body;
-      
-        for(let i = 0;i<userIds.length;i++){
-            let user = await UserDb.findByPk(userIds[i]) //console.log(user.dataValues.esteAdmin)
-            if(!user){
-                return res.status(400).json({
-                    message:"nu exista user"
-                })
-            } 
-            
-        }
-        await TaskDB.create(taskToCreate).then(async(rez)=>{
-            const {id} = rez;
-            await userIds.forEach(element => {
-
-                let userTaskObj = {
-                    idUser: element,
-                    idTask: id
+        const { taskToCreate, userIds } = req.body;
+    
+        try {
+            for (let i = 0; i < userIds.length; i++) {
+                let user = await UserDb.findByPk(userIds[i]);
+                if (!user) {
+                    return res.status(400).json({
+                        message: "Nu exista user"
+                    });
                 }
-
-                userTaskDB.create(userTaskObj);
+            }
+    
+            const createdTask = await TaskDB.create(taskToCreate);
+            const { id } = createdTask;
+    
+            const userTaskPromises = userIds.map((userId) => {
+                const userTaskObj = {
+                    idUser: userId,
+                    idTask: id
+                };
+                return userTaskDB.create(userTaskObj);
             });
-        }).catch((err)=> {
+    
+            await Promise.all(userTaskPromises);
+    
+            return res.status(200).json({ message: "Ai asignat cu succes task-ul" });
+        } catch (err) {
             return res.status(500).send(err);
-        });
-
-        return res.status(200).json({message: "Ai asignat cu succes task-ul"});
-        
+        }
     },
 
     getAll: async (req, res) => {

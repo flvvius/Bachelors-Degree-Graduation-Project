@@ -5,6 +5,8 @@ import HomeUser from './pages/HomeUser';
 import HomeAdmin from './pages/HomeAdmin';
 import ProtectedRoute from './components/ProtectedRoute';
 import { useAuth } from './hooks/useAuth.js';
+import HomeUnauthorised from "./pages/HomeUnauthorised.jsx"
+import ManageFeedback from './pages/ManageFeedback.jsx';
 
 function App() {
 
@@ -31,10 +33,11 @@ function App() {
             exact
             path="/home"
             element={<ProtectedRoute>
-              {user && user.esteAdmin ? <HomeAdmin user={user} /> : user ? <HomeUser user={user} /> : <Login /> }
+              {user && user.esteAdmin ? <HomeAdmin user={user} /> : user && user.apartineFirmei ? <HomeUser user={user} /> : user ? <HomeUnauthorised /> : <Login /> }
             </ProtectedRoute>}
           />
           <Route path="/" element={<Login />} />
+          <Route path="/feedback" element={<ManageFeedback />} />
         </Routes>
     </Router>
 );

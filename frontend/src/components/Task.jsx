@@ -1,7 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import styles from '../styles/Task.module.css'
-import Feedback from "./Feedback";
+import Feedback from "./UserFeedback";
 
 const Task = ({task, updateTask, user}) => {
 

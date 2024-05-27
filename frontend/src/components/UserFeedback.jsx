@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import '../styles/Feedback.module.css';
 import axios from 'axios';
 
-const Feedback = ({ show, onClose, userId, taskId }) => {
+const UserFeedback = ({ show, onClose, userId, taskId }) => {
 
     const tipFeedback = taskId == null ? "Zi de lucru" : "Task"
 
@@ -85,4 +85,4 @@ const Feedback = ({ show, onClose, userId, taskId }) => {
   );
 };
 
-export default Feedback;
+export default UserFeedback;

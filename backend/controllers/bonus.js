@@ -21,11 +21,15 @@ const controller = {
         }
     },
 
-    getUserById: async (req, res) => {
+    getBonusesByUserId: async (req, res) => {
         const id = req.params.id;
         try {
-            const bonus = await bonusDB.findByPk(id);
-            res.status(200).send(bonus);
+            const bonuses = await bonusDB.findAll({
+                where: {
+                    idUser: id
+                }
+            });
+            res.status(200).send(bonuses);
         } catch (err) {
             res.status(500).send(err.message);
         }

@@ -18,6 +18,10 @@ const User = (db, DataTypes) => db.define("User", {
 
     esteAdmin: {
         type: DataTypes.BOOLEAN
+    },
+
+    apartineFirmei: {
+        type: DataTypes.BOOLEAN
     }
 })
 

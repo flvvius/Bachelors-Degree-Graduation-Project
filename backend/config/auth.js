@@ -17,6 +17,7 @@ passport.use(new Strategy({
                 nume: profile.name.givenName + " " + (profile.name.middleName !== undefined ? profile.name.middleName + " " + profile.name.familyName : profile.name.familyName),
                 mail: profile.emails[0].value,
                 esteAdmin: false,
+                apartineFirmei: false,
             })
             .then((user) => {
                 next(null, user); //.get()

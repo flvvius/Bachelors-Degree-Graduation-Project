@@ -65,30 +65,27 @@ const controller = {
         } catch (err) {
             return res.status(500).send(err.message);
         }
-    }
+    },
 
-    // updateUser: async (req, res) => {
-    //     const {userId} = req.params;
-    //     const payload = {
-    //         firstName: req.body.firstName,
-    //         lastName: req.body.lastName,
-    //         email: req.body.email,
-    //         password: req.body.password,
-    //         phone: req.body.phone,
-    //         university: req.body.university,
-    //         studyYear: req.body.studyYear,
-    //     };
+    updateUser: async (req, res) => {
+        const id = req.params.id;
+        const payload = {
+            mail: req.body.mail,
+            nume: req.body.nume,
+            esteAdmin: req.body.esteAdmin,
+            apartineFirmei: req.body.apartineFirmei
+        };
 
-    //     try {
-    //         const user = await UserDb.findByPk(userId);
-    //         if (!user) return res.status(400).send();
+        try {
+            const user = await UserDb.findByPk(id);
+            if (!user) return res.status(400).json({message: "User not found"});
 
-    //         const newUser = await user.update(payload)
-    //         res.status(200).send(newUser);
-    //     } catch (err) {
-    //         res.status(500).send(err.message);
-    //     }
-    // },
+            const newUser = await user.update(payload)
+            res.status(200).send(newUser);
+        } catch (err) {
+            res.status(500).send(err.message);
+        }
+    },
 };
 
 module.exports = controller;

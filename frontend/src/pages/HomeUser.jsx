@@ -2,20 +2,30 @@ import { useEffect, useState } from 'react'
 import styles from '../styles/Home.module.css'
 import axios from 'axios'
 import Task from '../components/Task'
-import Feedback from '../components/Feedback'
+import Feedback from '../components/UserFeedback'
 import Pontaj from '../components/Pontaj'
+import Bonus from '../components/Bonus'
 
 const HomeUser = ({user}) => {
 
     const [tasks, setTasks] = useState([]);
     const [showModal, setShowModal] = useState(false);
+    const [bonuses, setBonuses] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
             await axios.get(`http://localhost:8080/api/task/getTasksByUser/${user.id}`)
                 .then((response) => {
                     setTasks(response.data);
+                }
+            )
+            
+            await axios.get(`http://localhost:8080/api/bonus/getBonusesByUserId/${user.id}`)
+                .then(response => {
+                    setBonuses(response.data);
                 })
+
+
         }
         fetchData();
     }, [user.id])
@@ -38,7 +48,7 @@ const HomeUser = ({user}) => {
         <div className={styles.main_container}>
             <div className={styles.pontaj_container}>                   {/* ilustrare grafica pt pontaj */ }
                 
-                <Pontaj />
+                <Pontaj userId={user.id} />
 
             </div>
 
@@ -62,6 +72,28 @@ const HomeUser = ({user}) => {
             <div className={styles.feedback_container}>
                 <button onClick={handleOpenModal}>Acorda feedback pentru ziua de lucru</button>
                 <Feedback show={showModal} onClose={handleCloseModal} userId={user.id} taskId={null} />
+            </div>
+
+            <h2>Bonusuri</h2>
+            <div className={styles.bonuses_container}>
+
+                <div className={styles.unapplied_bonuses_container}>
+                    <h3>Bonusuri neaplicate</h3>
+                    {
+                        bonuses.filter(bonus => bonus.aplicat === false).map(bonus => (
+                            <Bonus key={bonus.id} user={user} bonus={bonus} />
+                        ))
+                    }
+                </div>
+
+                <div className={styles.applied_bonuses_container}>
+                <h3>Bonusuri aplicate</h3>
+                    {
+                        bonuses.filter(bonus => bonus.aplicat === true).map(bonus => (
+                            <Bonus key={bonus.id} user={user} bonus={bonus} />
+                        ))
+                    }
+                </div>
             </div>
 
         </div>

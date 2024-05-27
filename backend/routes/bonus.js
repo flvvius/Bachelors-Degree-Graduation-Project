@@ -6,6 +6,7 @@ const { bonusController } = require('../controllers');
 
 router.post('/add', bonusController.add);
 router.get('/getAll', bonusController.getAll);
+router.get("/getBonusesByUserId/:id", bonusController.getBonusesByUserId);
 // router.get('/:id', bonusController.getUserById);
 
 

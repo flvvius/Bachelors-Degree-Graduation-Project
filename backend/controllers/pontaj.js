@@ -1,4 +1,5 @@
 const {pontaj: pontajDB} = require('../models');
+const { Sequelize, Op } = require('sequelize');
 
 const controller = {
 
@@ -21,7 +22,7 @@ const controller = {
         }
     },
 
-    getUserById: async (req, res) => {
+    getPontajById: async (req, res) => {
         const id = req.params.id;
         try {
             const pontaj = await pontajDB.findByPk(id);
@@ -30,6 +31,35 @@ const controller = {
             res.status(500).send(err.message);
         }
     },
+
+    getPontajByData: async (req, res) => {
+
+        const {id} = req.params;
+
+        const searchDate = new Date();
+        const day = searchDate.getDate();
+        const month = searchDate.getMonth() + 1;
+
+        try {
+            const pontaj = await pontajDB.findOne({
+                where: {
+                    [Op.and]: [
+                        Sequelize.where(Sequelize.fn('DAY', Sequelize.col('data')), day),
+                        Sequelize.where(Sequelize.fn('MONTH', Sequelize.col('data')), month)
+                    ],
+                    idUser: id
+
+                }
+            })
+            // if (pontaj)
+                return res.status(200).send(pontaj);
+            // else
+            //     return res.status(400).json({message: "User not found"});
+        } catch (err) {
+            console.error(err);
+            return res.status(400).json({message: err});
+        }
+    }
 
 };
 
