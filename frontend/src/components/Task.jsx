@@ -36,11 +36,23 @@ const Task = ({task, updateTask, user}) => {
             <p>Deadline: {localTask.deadline}</p>
             <p>Importanta: {localTask.importanta}</p>
             <p>Data finalizare: {localTask.data_finalizare ? localTask.data_finalizare.toLocaleString() : "Nefinalizat"}</p>
-            {task.data_finalizare != null ? <></> : <button onClick={handleClick}>Finalizeaza</button>}
-            <div className={styles.feedback_container}>
-                <button onClick={handleOpenModal}>Acorda feedback pentru acest task</button>
-                <Feedback show={showModal} onClose={handleCloseModal} userId={user.id} taskId={task.id} />
-            </div>       
+            {
+                !user.esteAdmin && (
+                    <>
+                        {task.data_finalizare != null ? (
+                            <></>
+                        ) : (
+                            <button onClick={handleClick}>Finalizeaza</button>
+                        )}
+                        <div className={styles.feedback_container}>
+                            <button onClick={handleOpenModal}>Acorda feedback pentru acest task</button>
+                            <Feedback show={showModal} onClose={handleCloseModal} userId={user.id} taskId={task.id} />
+                        </div>
+                    </>
+                )
+            }
+
+                  
         </div>
     )
 }

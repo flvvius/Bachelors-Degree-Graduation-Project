@@ -22,7 +22,7 @@ const AdminFeedback = ({feedback}) => {
 
         fetchData();
 
-    }, [])
+    }, [feedback.idAngajat, feedback.idTask])
 
     return (
         <div>

@@ -53,6 +53,14 @@ const HomeAdmin = ({user}) => {
         navigate('/feedback')
     }
 
+    const goToAssignedTasks = () => {
+        navigate('/tasks')
+    }
+
+    const goToStatistics = () => {
+        navigate('/statistics')
+    }
+
     return (
         <div className={styles.main_container}>
             <div className={styles.users_container}>
@@ -68,6 +76,14 @@ const HomeAdmin = ({user}) => {
 
             <div>
                 <button onClick={goToFeedback}>Vezi feedback</button>
+            </div>
+
+            <div>
+                <button onClick={goToAssignedTasks}>Vezi task-uri asignate</button>
+            </div>
+
+            <div>
+                <button onClick={goToStatistics}>Vezi statistici</button>
             </div>
 
         </div>

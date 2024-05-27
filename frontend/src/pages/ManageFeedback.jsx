@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import AdminFeedback from "../components/AdminFeedback";
+import { useNavigate } from "react-router-dom";
 
 const ManageFeedback = () => {
 
@@ -18,15 +19,26 @@ const ManageFeedback = () => {
 
         fetchData();
 
+        const intervalId = setInterval(fetchData, 5000);
+
+        return () => clearInterval(intervalId);
+
     }, [])
+
+    const navigate = useNavigate();
+    const handleGoBack = () => {
+        navigate('/home');
+    }
 
     return (
         <div>
+            <h1>Feedbacks</h1>
             {
                 feedbacks.map(feedback => (
                     <AdminFeedback key={feedback.id} feedback={feedback} />
                 ))
             }
+            <button onClick={handleGoBack}>Go back</button>
         </div>
     )
 }
