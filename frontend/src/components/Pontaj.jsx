@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import styles from '../styles/Pontaj.module.css'
 import axios from 'axios'
+import { useToast } from '@chakra-ui/react'
 
 const Pontaj = ({userId}) => {
 
@@ -12,7 +13,8 @@ const Pontaj = ({userId}) => {
         check_in: null,
         check_out: null,
         idUser: userId
-    })
+    });
+    const toast = useToast()
 
     useEffect(() => {
         const fetchData = async () => {
@@ -66,8 +68,15 @@ const Pontaj = ({userId}) => {
         }
 
         if (checkInDate == null) {
-            alert("You can't check-out if u haven't checked-in first.");
-            return;
+            // alert("You can't check-out if u haven't checked-in first.");
+            return toast({
+                title: "You can't check-out",
+                description: "You have to first check-in in order to check-out.",
+                status: 'error',
+                duration: 9000,
+                isClosable: true,
+                position: 'top-right'
+              });
         }
 
         const currentDate = new Date();

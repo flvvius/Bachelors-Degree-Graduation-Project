@@ -1,9 +1,24 @@
 import React, { useState } from 'react';
-import styles from '../styles/Feedback.module.css';
 import axios from 'axios';
+import {
+    Button,
+    FormControl,
+    FormLabel,
+    Input,
+    Modal,
+    ModalOverlay,
+    ModalContent,
+    ModalHeader,
+    ModalFooter,
+    ModalBody,
+    ModalCloseButton,
+    Radio,
+    RadioGroup,
+    Stack,
+    Textarea,
+} from "@chakra-ui/react";
 
 const AddBonus = ({ show, onClose, userId }) => {
-
     const [formData, setFormData] = useState({
         cuantum_bonus: 0,
         descriere_bonus: "",
@@ -33,8 +48,7 @@ const AddBonus = ({ show, onClose, userId }) => {
         }
     };
 
-    const handleRadioChange = (e) => {
-        const { value } = e.target;
+    const handleRadioChange = (value) => {
         setFormData((prevData) => ({
             ...prevData,
             aplicat: value === "true"
@@ -42,66 +56,56 @@ const AddBonus = ({ show, onClose, userId }) => {
     };
 
     return (
-        <div className={styles.modalOverlay}>
-            <div className={styles.modal}>
-                <button className={styles.closeButton} onClick={onClose}>
-                    &times;
-                </button>
-                <div className={styles.modalContent}>
-                    <form onSubmit={handleSubmit}>
-
-                        <div>
-                            <label htmlFor="cuantum_bonus">Cuantum bonus:</label>
-                            <input
+        <Modal isOpen={show} onClose={onClose}>
+            <ModalOverlay />
+            <ModalContent>
+                <ModalHeader>Acorda Bonus</ModalHeader>
+                <ModalCloseButton />
+                <form onSubmit={handleSubmit}>
+                    <ModalBody pb={6}>
+                        <FormControl>
+                            <FormLabel htmlFor="cuantum_bonus">Cuantum bonus:</FormLabel>
+                            <Input
                                 type="number"
                                 id="cuantum_bonus"
                                 name="cuantum_bonus"
                                 value={formData.cuantum_bonus}
                                 onChange={handleChange}
+                                required
                             />
-                        </div>
+                        </FormControl>
 
-                        <div>
-                            <label htmlFor="descriere_bonus">Descriere bonus:</label>
-                            <textarea
+                        <FormControl mt={4}>
+                            <FormLabel htmlFor="descriere_bonus">Descriere bonus:</FormLabel>
+                            <Textarea
                                 id="descriere_bonus"
                                 name="descriere_bonus"
                                 value={formData.descriere_bonus}
                                 onChange={handleChange}
+                                required
                             />
-                        </div>
+                        </FormControl>
 
-                        <div>
-                            <label>Aplicat:</label>
-                            <div>
-                                <input
-                                    type="radio"
-                                    id="aplicat_true"
-                                    name="aplicat"
-                                    value="true"
-                                    checked={formData.aplicat === true}
-                                    onChange={handleRadioChange}
-                                />
-                                <label htmlFor="aplicat_true">Da</label>
-                            </div>
-                            <div>
-                                <input
-                                    type="radio"
-                                    id="aplicat_false"
-                                    name="aplicat"
-                                    value="false"
-                                    checked={formData.aplicat === false}
-                                    onChange={handleRadioChange}
-                                />
-                                <label htmlFor="aplicat_false">Nu</label>
-                            </div>
-                        </div>
+                        <FormControl mt={4}>
+                            <FormLabel>Aplicat:</FormLabel>
+                            <RadioGroup onChange={handleRadioChange} value={String(formData.aplicat)}>
+                                <Stack direction="row">
+                                    <Radio value="true">Da</Radio>
+                                    <Radio value="false">Nu</Radio>
+                                </Stack>
+                            </RadioGroup>
+                        </FormControl>
+                    </ModalBody>
 
-                        <button type="submit">Submit</button>
-                    </form>
-                </div>
-            </div>
-        </div>
+                    <ModalFooter>
+                        <Button colorScheme="blue" mr={3} type="submit">
+                            Submit
+                        </Button>
+                        <Button onClick={onClose}>Cancel</Button>
+                    </ModalFooter>
+                </form>
+            </ModalContent>
+        </Modal>
     );
 };
 

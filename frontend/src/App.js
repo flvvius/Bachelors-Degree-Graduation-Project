@@ -9,6 +9,7 @@ import HomeUnauthorised from "./pages/HomeUnauthorised.jsx"
 import ManageFeedback from './pages/ManageFeedback.jsx';
 import ViewTasks from './pages/ViewTasks.jsx';
 import Statistics from './pages/Statistics.jsx';
+import { ChakraProvider } from '@chakra-ui/react'
 
 function App() {
 
@@ -19,31 +20,33 @@ function App() {
   }
 
   return (
-    <Router>
-        <nav>
-            <ul>
-                <li>
-                    <Link to="/home">Home</Link>
-                </li>
-                <li>
-                    <Link to="/">Login</Link>
-                </li>
-            </ul>
-        </nav>
-        <Routes>
-          <Route
-            exact
-            path="/home"
-            element={<ProtectedRoute>
-              {user && user.esteAdmin ? <HomeAdmin user={user} /> : user && user.apartineFirmei ? <HomeUser user={user} /> : user ? <HomeUnauthorised /> : <Login /> }
-            </ProtectedRoute>}
-          />
-          <Route path="/" element={<Login />} />
-          <Route path="/feedback" element={<ProtectedRoute>{<ManageFeedback />}</ProtectedRoute>} />
-          <Route path="/tasks" element={<ProtectedRoute>{<ViewTasks user={user} />}</ProtectedRoute>} />
-          <Route path="/statistics" element={<ProtectedRoute>{<Statistics />}</ProtectedRoute>} />
-        </Routes>
-    </Router>
+    <ChakraProvider>
+      <Router>
+          <nav>
+              <ul>
+                  <li>
+                      <Link to="/home">Home</Link>
+                  </li>
+                  <li>
+                      <Link to="/">Login</Link>
+                  </li>
+              </ul>
+          </nav>
+          <Routes>
+            <Route
+              exact
+              path="/home"
+              element={<ProtectedRoute>
+                {user && user.esteAdmin ? <HomeAdmin user={user} /> : user && user.apartineFirmei ? <HomeUser user={user} /> : user ? <HomeUnauthorised /> : <Login /> }
+              </ProtectedRoute>}
+            />
+            <Route path="/" element={<Login />} />
+            <Route path="/feedback" element={<ProtectedRoute>{<ManageFeedback />}</ProtectedRoute>} />
+            <Route path="/tasks" element={<ProtectedRoute>{<ViewTasks user={user} />}</ProtectedRoute>} />
+            <Route path="/statistics" element={<ProtectedRoute>{<Statistics />}</ProtectedRoute>} />
+          </Routes>
+      </Router>
+    </ChakraProvider>
 );
 }
 
