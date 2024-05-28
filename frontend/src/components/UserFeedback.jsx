@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import '../styles/Feedback.module.css';
+import {Button, FormControl, FormLabel, Input, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, Textarea } from '@chakra-ui/react';
 import axios from 'axios';
 
 const UserFeedback = ({ show, onClose, userId, taskId }) => {
-
-    const tipFeedback = taskId == null ? "Zi de lucru" : "Task"
+    const tipFeedback = taskId == null ? "Zi de lucru" : "Task";
 
     const [formData, setFormData] = useState({
         tip_feedback: tipFeedback,
@@ -21,68 +20,72 @@ const UserFeedback = ({ show, onClose, userId, taskId }) => {
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData((prevData) => ({
-        ...prevData,
-        [name]: value,
+            ...prevData,
+            [name]: value,
         }));
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-        await axios.post('http://localhost:8080/api/feedback/add', formData);
-        onClose();
+            await axios.post('http://localhost:8080/api/feedback/add', formData);
+            onClose();
         } catch (error) {
-        console.error(error);
+            console.error(error);
         }
     };
 
-  return (
-    <div className="modal-overlay">
-      <div className="modal">
-        <button className="close-button" onClick={onClose}>
-          &times;
-        </button>
-        <div className="modal-content">
-            <form onSubmit={handleSubmit}>
+    return (
+        <Modal isOpen={show} onClose={onClose}>
+            <ModalOverlay />
+            <ModalContent>
+                <ModalHeader>Acorda feedback pentru {tipFeedback}</ModalHeader>
+                <ModalCloseButton />
+                <ModalBody>
+                    <form onSubmit={handleSubmit}>
+                        <FormControl mb={4}>
+                            <FormLabel htmlFor="tip_feedback">Tip feedback</FormLabel>
+                            <Input
+                                type="text"
+                                id="tip_feedback"
+                                name="tip_feedback"
+                                value={tipFeedback}
+                                readOnly
+                            />
+                        </FormControl>
 
-                <div>
-                    <label htmlFor="name">Tip feedback:</label>
-                    <input
-                        type="text"
-                        id="name"
-                        name="name"
-                        value={taskId == null ? "Zi de lucru" : "Task"}
-                        readOnly
-                    />
-                </div>
+                        <FormControl mb={4}>
+                            <FormLabel htmlFor="nota">Nota</FormLabel>
+                            <Input
+                                type="number"
+                                id="nota"
+                                name="nota"
+                                value={formData.nota}
+                                onChange={handleChange}
+                            />
+                        </FormControl>
 
-                <div>
-                <label htmlFor="nota">Nota:</label>
-                <input
-                    type="number"
-                    id="nota"
-                    name="nota"
-                    value={formData.nota}
-                    onChange={handleChange}
-                />
-                </div>
+                        <FormControl mb={4}>
+                            <FormLabel htmlFor="mesaj">Mesaj</FormLabel>
+                            <Textarea
+                                id="mesaj"
+                                name="mesaj"
+                                value={formData.mesaj}
+                                onChange={handleChange}
+                            />
+                        </FormControl>
 
-                <div>
-                <label htmlFor="mesaj">Mesaj:</label>
-                <textarea
-                    id="mesaj"
-                    name="mesaj"
-                    value={formData.mesaj}
-                    onChange={handleChange}
-                />
-                </div>
-
-                <button type="submit">Submit</button>
-            </form>
-        </div>
-      </div>
-    </div>
-  );
+                        <Button type="submit" colorScheme="teal" mr={3}>
+                            Submit
+                        </Button>
+                        <Button onClick={onClose}>
+                            Cancel
+                        </Button>
+                    </form>
+                </ModalBody>
+            </ModalContent>
+        </Modal>
+    );
 };
 
 export default UserFeedback;

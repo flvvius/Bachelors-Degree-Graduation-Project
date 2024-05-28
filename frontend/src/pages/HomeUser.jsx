@@ -1,13 +1,12 @@
-import { useEffect, useState } from 'react'
-import styles from '../styles/Home.module.css'
-import axios from 'axios'
-import Task from '../components/Task'
-import Feedback from '../components/UserFeedback'
-import Pontaj from '../components/Pontaj'
-import Bonus from '../components/Bonus'
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import Task from '../components/Task';
+import Feedback from '../components/UserFeedback';
+import Pontaj from '../components/Pontaj';
+import Bonus from '../components/Bonus';
+import { Box, Button, Flex, Heading, Stack } from '@chakra-ui/react';
 
-const HomeUser = ({user}) => {
-
+const HomeUser = ({ user }) => {
     const [tasks, setTasks] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [bonuses, setBonuses] = useState([]);
@@ -17,18 +16,15 @@ const HomeUser = ({user}) => {
             await axios.get(`http://localhost:8080/api/task/getTasksByUser/${user.id}`)
                 .then((response) => {
                     setTasks(response.data);
-                }
-            )
-            
+                });
+
             await axios.get(`http://localhost:8080/api/bonus/getBonusesByUserId/${user.id}`)
                 .then(response => {
                     setBonuses(response.data);
-                })
-
-
+                });
         }
         fetchData();
-    }, [user.id])
+    }, [user.id]);
 
     const updateTask = (updatedTask) => {
         setTasks(prevTasks => prevTasks.map(
@@ -39,65 +35,74 @@ const HomeUser = ({user}) => {
     const handleOpenModal = () => {
         setShowModal(true);
     };
-    
+
     const handleCloseModal = () => {
         setShowModal(false);
     };
 
     return (
-        <div className={styles.main_container}>
-            <div className={styles.pontaj_container}>                   {/* ilustrare grafica pt pontaj */ }
-                
-                <Pontaj userId={user.id} />
+        <Box p={5}>
+            <Flex mb={5}>
+                <Box flex="1">
+                    <Pontaj userId={user.id} />
+                </Box>
+            </Flex>
 
-            </div>
+            <Flex justify="space-between" alignItems="flex-start" height="50vh">
+                <Box flex="1" mr={4} maxW="50%">
+                    <Heading as="h2" size="lg" mb={4}>Active Tasks</Heading>
+                    <Box overflowY="auto" maxH="45vh">
+                        <Stack spacing={4}>
+                            {tasks.filter(task => task.data_finalizare == null).map(task => (
+                                <Task key={task.id} task={task} updateTask={updateTask} user={user} />
+                            ))}
+                        </Stack>
+                    </Box>
+                </Box>
 
-            <div className={styles.tasks_container}>
-                <div className={styles.active_tasks_container}>
-                    {
-                        tasks.filter(task => task.data_finalizare == null).map(task => (
-                            <Task key={task.id} task={task} updateTask={updateTask} user={user} /> )
-                        )
-                    }
-                </div>
-                <div className={styles.finished_tasks_container}>
-                {
-                    tasks.filter(task => task.data_finalizare != null).map(task => (
-                        <Task key={task.id} task={task} updateTask={updateTask} user={user} /> )
-                    )
-                }
-                </div>
-            </div>
+                <Box flex="1" maxW="50%">
+                    <Heading as="h2" size="lg" mb={4}>Finished Tasks</Heading>
+                    <Box overflowY="auto" maxH="45vh">
+                        <Stack spacing={4}>
+                            {tasks.filter(task => task.data_finalizare != null).map(task => (
+                                <Task key={task.id} task={task} updateTask={updateTask} user={user} />
+                            ))}
+                        </Stack>
+                    </Box>
+                </Box>
+            </Flex>
 
-            <div className={styles.feedback_container}>
-                <button onClick={handleOpenModal}>Acorda feedback pentru ziua de lucru</button>
+            <Box mt={10}>
+                <Button colorScheme="teal" onClick={handleOpenModal}>Acorda feedback pentru ziua de lucru</Button>
                 <Feedback show={showModal} onClose={handleCloseModal} userId={user.id} taskId={null} />
-            </div>
+            </Box>
 
-            <h2>Bonusuri</h2>
-            <div className={styles.bonuses_container}>
+            <Heading as="h2" size="lg" mt={10} mb={4}>Bonusuri</Heading>
+            <Flex justify="space-between" wrap="wrap" height="50vh">
+                <Box flex="1" minW="300px" mr={4} maxW="50%">
+                    <Heading as="h3" size="md" mb={4}>Bonusuri neaplicate</Heading>
+                    <Box overflowY="auto" maxH="45vh">
+                        <Stack spacing={4}>
+                            {bonuses.filter(bonus => bonus.aplicat === false).map(bonus => (
+                                <Bonus key={bonus.id} user={user} bonus={bonus} />
+                            ))}
+                        </Stack>
+                    </Box>
+                </Box>
 
-                <div className={styles.unapplied_bonuses_container}>
-                    <h3>Bonusuri neaplicate</h3>
-                    {
-                        bonuses.filter(bonus => bonus.aplicat === false).map(bonus => (
-                            <Bonus key={bonus.id} user={user} bonus={bonus} />
-                        ))
-                    }
-                </div>
-
-                <div className={styles.applied_bonuses_container}>
-                <h3>Bonusuri aplicate</h3>
-                    {
-                        bonuses.filter(bonus => bonus.aplicat === true).map(bonus => (
-                            <Bonus key={bonus.id} user={user} bonus={bonus} />
-                        ))
-                    }
-                </div>
-            </div>
-
-        </div>
-    )
+                <Box flex="1" minW="300px" maxW="50%">
+                    <Heading as="h3" size="md" mb={4}>Bonusuri aplicate</Heading>
+                    <Box overflowY="auto" maxH="45vh">
+                        <Stack spacing={4}>
+                            {bonuses.filter(bonus => bonus.aplicat === true).map(bonus => (
+                                <Bonus key={bonus.id} user={user} bonus={bonus} />
+                            ))}
+                        </Stack>
+                    </Box>
+                </Box>
+            </Flex>
+        </Box>
+    );
 }
 
 export default HomeUser;

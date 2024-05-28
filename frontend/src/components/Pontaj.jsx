@@ -1,11 +1,9 @@
-import { useEffect, useState } from 'react'
-import styles from '../styles/Pontaj.module.css'
-import axios from 'axios'
-import { useToast } from '@chakra-ui/react'
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { Box, Button, Heading, Text, useToast } from '@chakra-ui/react';
 
-const Pontaj = ({userId}) => {
-
-    const currentDate = new Date()
+const Pontaj = ({ userId }) => {
+    const currentDate = new Date();
     const [checkInDate, setCheckInDate] = useState(null);
     const [checkOutDate, setCheckOutDate] = useState(null);
     const [pontaj, setPontaj] = useState({
@@ -14,12 +12,12 @@ const Pontaj = ({userId}) => {
         check_out: null,
         idUser: userId
     });
-    const toast = useToast()
+    const toast = useToast();
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get(`http://localhost:8080/api/pontaj/getPontajByData/${userId}`, {withCredentials: true});
+                const response = await axios.get(`http://localhost:8080/api/pontaj/getPontajByData/${userId}`, { withCredentials: true });
 
                 if (response.data) {
                     setPontaj(response.data);
@@ -27,14 +25,13 @@ const Pontaj = ({userId}) => {
                     setCheckOutDate(response.data.check_out);
                 }
 
-
             } catch (err) {
                 console.log(err);
             }
-        }
+        };
 
         fetchData();
-    }, [userId])
+    }, [userId]);
 
     const formatDate = (date) => {
         const year = date.getFullYear();
@@ -47,7 +44,6 @@ const Pontaj = ({userId}) => {
     };
 
     const handleCheckIn = () => {
-
         if (checkInDate != null) {
             return;
         }
@@ -57,18 +53,16 @@ const Pontaj = ({userId}) => {
         setPontaj((prevPontaj) => ({
             ...prevPontaj,
             check_in: currentDate
-        }));        
+        }));
         setCheckInDate(formatDate(currentDate));
     };
 
     const handleCheckOut = async () => {
-
         if (checkOutDate != null) {
             return;
         }
 
         if (checkInDate == null) {
-            // alert("You can't check-out if u haven't checked-in first.");
             return toast({
                 title: "You can't check-out",
                 description: "You have to first check-in in order to check-out.",
@@ -76,7 +70,7 @@ const Pontaj = ({userId}) => {
                 duration: 9000,
                 isClosable: true,
                 position: 'top-right'
-              });
+            });
         }
 
         const currentDate = new Date();
@@ -94,24 +88,27 @@ const Pontaj = ({userId}) => {
         } catch (error) {
             console.error(error);
         }
-
     };
 
     return (
-        <>
-            <h1 className={styles.ceva}>Pontaj</h1> 
+        <Box>
+            <Heading mb={4}>Pontaj</Heading>
 
-            <div>
-                {checkInDate && <p>Check-In Date: {checkInDate}</p>}
-                <button onClick={handleCheckIn}>Check-In</button>
-            </div>
+            <Box mb={4}>
+                {checkInDate && <Text>Check-In Date: {checkInDate}</Text>}
+                <Button colorScheme="teal" onClick={handleCheckIn} mt={2}>
+                    Check-In
+                </Button>
+            </Box>
 
-            <div>
-                {checkOutDate && <p>Check-Out Date: {checkOutDate}</p>}
-                <button onClick={handleCheckOut}>Check-Out</button>     
-            </div>
-        </>
-    )
+            <Box>
+                {checkOutDate && <Text>Check-Out Date: {checkOutDate}</Text>}
+                <Button colorScheme="teal" onClick={handleCheckOut} mt={2}>
+                    Check-Out
+                </Button>
+            </Box>
+        </Box>
+    );
 }
 
 export default Pontaj;
