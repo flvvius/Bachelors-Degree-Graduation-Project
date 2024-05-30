@@ -11,8 +11,9 @@ const Navbar = () => {
 
   const navigate = useNavigate();
 
-  const handleLogout = () => { // de implementat delogarea
-    console.log("Logged out");
+  const handleLogout = async (e) => { // de implementat delogarea
+    e.preventDefault();
+    await window.open(`http://localhost:8080/api/auth/logout`, "_self");
     navigate('/');
   };
 

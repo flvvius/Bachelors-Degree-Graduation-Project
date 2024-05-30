@@ -21,12 +21,13 @@ authRouter.get("/redirect", passport.authenticate("google", {failureRedirect: "/
     res.redirect('http://localhost:3000/home');
 });
 
-authRouter.get("/logout", (req, res) => {
-    req.logout(function(err) {
+authRouter.get("/logout", (req, res, next) => {
+    req.logout((err) => {
         if (err) { return next(err); }
+        res.clearCookie('connect.sid', { path: '/' });
         res.redirect("http://localhost:3000/");
     });
-})
+});
 
 module.exports = authRouter;
 

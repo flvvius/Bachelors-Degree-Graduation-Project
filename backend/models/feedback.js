@@ -21,6 +21,11 @@ const Feedback = (db, DataTypes) => db.define("Feedback", {
         allowNull: false
     },
 
+    photoPath: {
+        type: DataTypes.STRING,
+        allowNull: true,
+    },
+
     idAngajat: {
         type: DataTypes.INTEGER,
         allowNull: false

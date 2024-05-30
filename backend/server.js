@@ -35,17 +35,18 @@ app.use(session({
     resave: false,
     saveUninitialized: true,
     cookie: {
-        maxAge: 1 * 60 * 60 * 1000 // 1 hour
+        maxAge: 1 * 60 * 60 * 1000, // 1 hour
+        secure: false,
+        httpOnly: true
     }
 }));
 
 app.use(passport.initialize());
 app.use(passport.session());
 
-//app.use(passport.authenticate("session"));
-
-
 app.use("/api", router);
+
+app.use('/uploads', express.static('uploads')); // ???
 
 app.get("/reset", async (req,res) => {
     try {
