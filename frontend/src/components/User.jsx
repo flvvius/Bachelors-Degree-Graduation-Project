@@ -4,60 +4,45 @@ import AddBonus from "./AddBonus";
 import {
     Box,
     Button,
-    Checkbox,
     Heading,
     Stack,
     Text,
     useColorModeValue,
     VStack,
-    HStack,
     FormControl,
-    FormLabel
+    FormLabel,
+    Select,
+    Modal,
+    ModalOverlay,
+    ModalContent,
+    ModalHeader,
+    ModalCloseButton,
+    ModalBody,
+    ModalFooter,
+    useDisclosure
 } from "@chakra-ui/react";
 
 const User = ({ user }) => {
-    const [checkedAdmin, setCheckedAdmin] = useState(user.esteAdmin);
-    const [checkedAngajat, setCheckedAngajat] = useState(user.apartineFirmei);
+    const [role, setRole] = useState(user.esteAdmin ? "admin" : user.apartineFirmei ? "angajat" : "none");
     const [updatedUser, setUpdatedUser] = useState({
         id: user.id,
         mail: user.mail,
         nume: user.nume,
         esteAdmin: user.esteAdmin,
         apartineFirmei: user.apartineFirmei,
+        cuantificareTimp: user.cuantificareTimp
     });
     const [showModal, setShowModal] = useState(false);
+    const { isOpen, onOpen, onClose } = useDisclosure();
 
-    useEffect(() => {
-        setUpdatedUser((prevUser) => ({
-            ...prevUser,
-            esteAdmin: checkedAdmin,
-        }));
-    }, [checkedAdmin]);
-
-    const handleAdminCheck = async () => {
-        const newCheckedAdmin = !checkedAdmin;
-        setCheckedAdmin(newCheckedAdmin);
+    const handleRoleChange = async (event) => {
+        const newRole = event.target.value;
+        setRole(newRole);
 
         const updatedUserData = {
             ...updatedUser,
-            esteAdmin: newCheckedAdmin,
-        };
-
-        try {
-            await axios.put(`http://localhost:8080/api/user/update/${user.id}`, updatedUserData, { withCredentials: true });
-            setUpdatedUser(updatedUserData);
-        } catch (err) {
-            console.log(err);
-        }
-    };
-
-    const handleAngajatCheck = async () => {
-        const newCheckedAngajat = !checkedAngajat;
-        setCheckedAngajat(newCheckedAngajat);
-
-        const updatedUserData = {
-            ...updatedUser,
-            apartineFirmei: newCheckedAngajat,
+            esteAdmin: newRole === "admin",
+            apartineFirmei: newRole === "angajat",
         };
 
         try {
@@ -89,6 +74,13 @@ const User = ({ user }) => {
     const userBgColor = useColorModeValue('white', 'gray.800');
     const nameColor = useColorModeValue('teal.600', 'teal.200');
 
+    const formatTime = (seconds) => {
+        const hours = Math.floor(seconds / 3600);
+        const minutes = Math.floor((seconds % 3600) / 60);
+        const remainingSeconds = seconds % 60;
+        return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
+    };
+
     return (
         <Box
             p={5}
@@ -104,35 +96,53 @@ const User = ({ user }) => {
                     {user.nume}
                 </Heading>
                 <Text>{user.mail}</Text>
+                <Text>
+                    {user.cuantificareTimp >= 0 ? (
+                        <>
+                        worked extra <Text as="span" fontWeight="bold" color="tan">{formatTime(Math.floor(user.cuantificareTimp))}</Text>
+                        </>
+                    ) : (
+                        <>
+                        worked <Text as="span" fontWeight="bold" color="tan">{formatTime(Math.abs(Math.floor(user.cuantificareTimp)))}</Text> less than expected
+                        </>
+                    )}
+                </Text>
                 <FormControl>
                     <FormLabel>Roles</FormLabel>
-                    <HStack spacing={4}>
-                        <Checkbox 
-                            isChecked={checkedAdmin} 
-                            onChange={handleAdminCheck} 
-                            colorScheme="teal"
-                        >
-                            Este admin
-                        </Checkbox>
-                        <Checkbox 
-                            isChecked={checkedAngajat} 
-                            onChange={handleAngajatCheck} 
-                            colorScheme="teal"
-                        >
-                            Este angajat
-                        </Checkbox>
-                    </HStack>
+                    <Select value={role} onChange={handleRoleChange}>
+                        <option value="admin">Este admin</option>
+                        <option value="angajat">Este angajat</option>
+                        <option value="none">None</option>
+                    </Select>
                 </FormControl>
                 <Stack direction={{ base: 'column', md: 'row' }} spacing={4} w="100%">
                     <Button colorScheme="teal" onClick={handleOpenModal} w="full">
                         Acorda bonus
                     </Button>
-                    <Button colorScheme="red" onClick={handleDelete} w="full">
+                    <Button colorScheme="red" onClick={onOpen} w="full">
                         Sterge utilizator
                     </Button>
                 </Stack>
             </VStack>
             <AddBonus show={showModal} onClose={handleCloseModal} userId={user.id} />
+
+            {/* Delete Confirmation Modal */}
+            <Modal isOpen={isOpen} onClose={onClose}>
+                <ModalOverlay />
+                <ModalContent>
+                    <ModalHeader>Confirmare Stergere</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody>
+                        <Text>Sunteti sigur ca doriti sa stergeti acest utilizator?</Text>
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button colorScheme="red" mr={3} onClick={handleDelete}>
+                            Sterge
+                        </Button>
+                        <Button variant="ghost" onClick={onClose}>Anuleaza</Button>
+                    </ModalFooter>
+                </ModalContent>
+            </Modal>
         </Box>
     );
 };

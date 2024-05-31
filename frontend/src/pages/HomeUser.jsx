@@ -1,28 +1,48 @@
-import { useEffect, useState } from 'react';
-import axios from 'axios';
-import Task from '../components/Task';
-import Feedback from '../components/UserFeedback';
-import Pontaj from '../components/Pontaj';
-import Bonus from '../components/Bonus';
-import { Box, Button, Flex, Heading, Stack } from '@chakra-ui/react';
+import { useEffect, useState } from "react";
+import axios from "axios";
+import Task from "../components/Task";
+import Feedback from "../components/UserFeedback";
+import Pontaj from "../components/Pontaj";
+import Bonus from "../components/Bonus";
+import { Box, Button, Flex, Heading, Stack } from "@chakra-ui/react";
 
 const HomeUser = ({ user }) => {
     const [tasks, setTasks] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [bonuses, setBonuses] = useState([]);
+    const [esteColectivMap, setEsteColectivMap] = useState({});
 
     useEffect(() => {
         const fetchData = async () => {
-            await axios.get(`http://localhost:8080/api/task/getTasksByUser/${user.id}`)
-                .then((response) => {
-                    setTasks(response.data);
-                });
+            const [tasksResponse, bonusesResponse] = await Promise.all([
+                axios.get(`http://localhost:8080/api/task/getTasksByUser/${user.id}`, { withCredentials: true }),
+                axios.get(`http://localhost:8080/api/bonus/getBonusesByUserId/${user.id}`, { withCredentials: true })
+            ]);
+            
+            setTasks(tasksResponse.data);
+            setBonuses(bonusesResponse.data);
 
-            await axios.get(`http://localhost:8080/api/bonus/getBonusesByUserId/${user.id}`)
-                .then(response => {
-                    setBonuses(response.data);
-                });
-        }
+            const esteColectivPromises = tasksResponse.data.map(task =>
+                axios.get(`http://localhost:8080/api/task/getEsteTaskColectiv/${task.id}`, { withCredentials: true })
+                    .then(response => ({
+                        taskId: task.id,
+                        esteColectiv: response.data.message === "task colectiv"
+                    }))
+                    .catch(err => {
+                        console.log(err);
+                        return { taskId: task.id, esteColectiv: false };
+                    })
+            );
+
+            const esteColectivResults = await Promise.all(esteColectivPromises);
+            const esteColectivMap = esteColectivResults.reduce((map, result) => {
+                map[result.taskId] = result.esteColectiv;
+                return map;
+            }, {});
+
+            setEsteColectivMap(esteColectivMap);
+        };
+
         fetchData();
     }, [user.id]);
 
@@ -44,7 +64,7 @@ const HomeUser = ({ user }) => {
         <Box p={5}>
             <Flex mb={5}>
                 <Box flex="1">
-                    <Pontaj userId={user.id} />
+                    <Pontaj user={user} />
                 </Box>
             </Flex>
 
@@ -54,7 +74,13 @@ const HomeUser = ({ user }) => {
                     <Box overflowY="auto" maxH="45vh">
                         <Stack spacing={4}>
                             {tasks.filter(task => task.data_finalizare == null).map(task => (
-                                <Task key={task.id} task={task} updateTask={updateTask} user={user} />
+                                <Task
+                                    key={task.id}
+                                    task={task}
+                                    updateTask={updateTask}
+                                    user={user}
+                                    esteColectiv={esteColectivMap[task.id]}
+                                />
                             ))}
                         </Stack>
                     </Box>
@@ -65,7 +91,13 @@ const HomeUser = ({ user }) => {
                     <Box overflowY="auto" maxH="45vh">
                         <Stack spacing={4}>
                             {tasks.filter(task => task.data_finalizare != null).map(task => (
-                                <Task key={task.id} task={task} updateTask={updateTask} user={user} />
+                                <Task
+                                    key={task.id}
+                                    task={task}
+                                    updateTask={updateTask}
+                                    user={user}
+                                    esteColectiv={esteColectivMap[task.id]}
+                                />
                             ))}
                         </Stack>
                     </Box>
@@ -83,7 +115,7 @@ const HomeUser = ({ user }) => {
                     <Heading as="h3" size="md" mb={4}>Bonusuri neaplicate</Heading>
                     <Box overflowY="auto" maxH="45vh">
                         <Stack spacing={4}>
-                            {bonuses.filter(bonus => bonus.aplicat === false).map(bonus => (
+                            {bonuses.filter(bonus => !bonus.aplicat).map(bonus => (
                                 <Bonus key={bonus.id} user={user} bonus={bonus} />
                             ))}
                         </Stack>
@@ -94,7 +126,7 @@ const HomeUser = ({ user }) => {
                     <Heading as="h3" size="md" mb={4}>Bonusuri aplicate</Heading>
                     <Box overflowY="auto" maxH="45vh">
                         <Stack spacing={4}>
-                            {bonuses.filter(bonus => bonus.aplicat === true).map(bonus => (
+                            {bonuses.filter(bonus => bonus.aplicat).map(bonus => (
                                 <Bonus key={bonus.id} user={user} bonus={bonus} />
                             ))}
                         </Stack>
@@ -103,6 +135,6 @@ const HomeUser = ({ user }) => {
             </Flex>
         </Box>
     );
-}
+};
 
 export default HomeUser;

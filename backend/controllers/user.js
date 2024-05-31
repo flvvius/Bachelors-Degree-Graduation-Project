@@ -73,7 +73,8 @@ const controller = {
             mail: req.body.mail,
             nume: req.body.nume,
             esteAdmin: req.body.esteAdmin,
-            apartineFirmei: req.body.apartineFirmei
+            apartineFirmei: req.body.apartineFirmei,
+            cuantificareTimp: req.body.cuantificareTimp
         };
 
         try {

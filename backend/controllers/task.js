@@ -110,6 +110,30 @@ const controller = {
 
     },
 
+    getUsersByTask: async (req, res) => {
+        const idTask = req.params.id
+
+        await userTaskDB.findAll({
+            where: {
+                idTask: idTask
+            }
+        }).then(async (userTaskObjects) => {
+            const userIds = userTaskObjects.map(obj => obj.idUser);
+            let users = [];
+
+            for (id of userIds) {
+                let user = await UserDb.findByPk(id);
+                if (user) {
+                    users.push(user)
+                }
+            }
+
+            return res.status(200).send(users);
+        }).catch((err) => {
+            return res.status(500).send(err.message);
+        })
+    },
+
     update: async (req, res) => {
         const {id} = req.params; // params sau body?
         const payload = req.body;

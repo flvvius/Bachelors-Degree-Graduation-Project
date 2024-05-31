@@ -22,6 +22,10 @@ const User = (db, DataTypes) => db.define("User", {
 
     apartineFirmei: {
         type: DataTypes.BOOLEAN
+    },
+
+    cuantificareTimp: {
+        type: DataTypes.DOUBLE
     }
 })
 
