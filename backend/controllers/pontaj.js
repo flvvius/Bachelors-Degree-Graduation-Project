@@ -22,10 +22,15 @@ const controller = {
         }
     },
 
-    getPontajById: async (req, res) => {
-        const id = req.params.id;
+    getPontajByUser: async (req, res) => {
+        const idUser = req.params.id;
+
         try {
-            const pontaj = await pontajDB.findByPk(id);
+            const pontaj = await pontajDB.findAll({
+                where: {
+                    idUser: idUser
+                }
+            });
             res.status(200).send(pontaj);
         } catch (err) {
             res.status(500).send(err.message);
@@ -51,10 +56,7 @@ const controller = {
 
                 }
             })
-            // if (pontaj)
                 return res.status(200).send(pontaj);
-            // else
-            //     return res.status(400).json({message: "User not found"});
         } catch (err) {
             console.error(err);
             return res.status(400).json({message: err});

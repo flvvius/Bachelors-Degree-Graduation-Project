@@ -6,7 +6,7 @@ const { pontajController } = require('../controllers');
 
 router.post('/add', pontajController.add);
 router.get('/getAll', pontajController.getAll);
-// router.get('/:id', bonusController.getUserById);
+router.get('/get/:id', pontajController.getPontajByUser);
 router.get('/getPontajByData/:id', pontajController.getPontajByData);
 
 
