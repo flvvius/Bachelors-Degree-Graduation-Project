@@ -1,4 +1,5 @@
 const {user: UserDb} = require('../models');
+const {userTask: UserTaskDB} = require('../models')
 
 
 const controller = {
@@ -17,6 +18,15 @@ const controller = {
         try {
             const users = await UserDb.findAll();
             res.status(200).send(users);
+        } catch (err) {
+            res.status(500).send(err.message);
+        }
+    },
+
+    getAllUserTasks: async (req, res) => {
+        try {
+            const usersTasks = await UserTaskDB.findAll();
+            res.status(200).send(usersTasks);
         } catch (err) {
             res.status(500).send(err.message);
         }

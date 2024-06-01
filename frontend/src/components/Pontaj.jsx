@@ -160,7 +160,7 @@ const Pontaj = () => {
                     <Button colorScheme="teal" onClick={handleCheckOut} mt={2}>
                         Check-Out
                     </Button>
-                    {!checkOutDate && <Button colorScheme={isPaused ? "teal" : "red"} onClick={handlePauseResume} mt={2}>
+                    {checkInDate && !checkOutDate && <Button colorScheme={isPaused ? "teal" : "red"} onClick={handlePauseResume} mt={2}>
                         {isPaused ? 'Resume' : 'Pause'}
                     </Button>}
                     

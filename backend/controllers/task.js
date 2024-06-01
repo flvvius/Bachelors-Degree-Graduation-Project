@@ -107,6 +107,30 @@ const controller = {
             return res.status(500).send(err.message);
         })
 
+    },
+
+    getFinishedTasksByUser: async (req, res) => { // daca nu exista userul returneaza un array gol
+        const idUser = req.params.id;
+
+        await userTaskDB.findAll({
+            where: {
+                idUser: idUser
+            }
+        }).then(async (userTaskObjects) => {
+            const taskIds = userTaskObjects.map(obj => obj.idTask);
+            let tasks = [];
+
+            for (id of taskIds) {
+                let task = await TaskDB.findByPk(id);
+                if (task && task.data_finalizare && new Date(task.data_finalizare).getTime() <= new Date(task.deadline).getTime()) {
+                    tasks.push(task)
+                }
+            }
+
+            return res.status(200).send(tasks);
+        }).catch((err) => {
+            return res.status(500).send(err.message);
+        })
 
     },
 
