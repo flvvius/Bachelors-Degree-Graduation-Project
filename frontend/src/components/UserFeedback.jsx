@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
-import {Button, FormControl, FormLabel, Input, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, Textarea } from '@chakra-ui/react';
+import {Button, FormControl, FormLabel, Input, Modal, ModalOverlay, ModalContent, ModalHeader, ModalBody, ModalCloseButton, Textarea, useToast } from '@chakra-ui/react';
 import axios from 'axios';
 
 const UserFeedback = ({ show, onClose, userId, taskId }) => {
     const tipFeedback = taskId == null ? "Zi de lucru" : "Task";
 
+    const toast = useToast();
+
     const [file, setFile] = useState(null);
     const [formData, setFormData] = useState({
         tip_feedback: tipFeedback,
-        nota: 0,
+        nota: null,
         mesaj: "",
         idAngajat: userId,
         idTask: taskId
@@ -42,8 +44,24 @@ const UserFeedback = ({ show, onClose, userId, taskId }) => {
                 },
             });
             onClose();
+            return toast({
+                title: "Success",
+                description: `You successfully rated this ${formData.tip_feedback === "Task" ? "task" : "working day"}!`,
+                status: 'success',
+                duration: 9000,
+                isClosable: true,
+                position: 'top-right'
+            });
         } catch (error) {
             console.error(error);
+            return toast({
+                title: "Invalid rating",
+                description: "You have to pick a rating from 1 to 10!",
+                status: 'error',
+                duration: 9000,
+                isClosable: true,
+                position: 'top-right'
+            });
         }
     };
 

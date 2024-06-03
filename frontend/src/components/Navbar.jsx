@@ -1,7 +1,8 @@
 // src/components/Navbar.jsx
-import { Box, Flex, HStack, Link, IconButton, useDisclosure, useColorModeValue, Stack, Button, useColorMode } from "@chakra-ui/react";
+import { Box, Flex, HStack, Link, IconButton, useDisclosure, useColorModeValue, Stack, Button, useColorMode, Image } from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
+import logo from '../assets/logo.webp'
 
 const Navbar = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -43,7 +44,7 @@ const Navbar = () => {
           onClick={isOpen ? onClose : onOpen}
         />
         <HStack spacing={8} alignItems={'center'}>
-          <Box>Logo</Box>
+          <Image src={logo} width={"40px"} />
           <HStack
             as={'nav'}
             spacing={4}

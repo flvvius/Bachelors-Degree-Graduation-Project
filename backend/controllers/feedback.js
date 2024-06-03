@@ -17,6 +17,10 @@ const controller = {
             idTask: parsedIdTask
         }
 
+        if (!nota || nota < 1 || nota > 10) {
+            return res.status(400).json({message: "invalid_nota"});
+        }
+
         try {
 
             const angajat = await userDB.findByPk(idAngajat);
