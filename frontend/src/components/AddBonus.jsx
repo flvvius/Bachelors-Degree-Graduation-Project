@@ -16,6 +16,7 @@ import {
     RadioGroup,
     Stack,
     Textarea,
+    useToast,
 } from "@chakra-ui/react";
 
 const AddBonus = ({ show, onClose, userId }) => {
@@ -25,6 +26,8 @@ const AddBonus = ({ show, onClose, userId }) => {
         aplicat: false,
         idUser: userId,
     });
+
+    const toast = useToast();
 
     if (!show) {
         return null;
@@ -43,9 +46,28 @@ const AddBonus = ({ show, onClose, userId }) => {
         try {
             await axios.post('http://localhost:8080/api/bonus/add', formData);
             onClose();
+            return toast({
+                title: "Success",
+                description: "You successfully added the bonus!",
+                status: 'success',
+                duration: 9000,
+                isClosable: true,
+                position: 'top-right'
+            });
         } catch (error) {
-            console.error(error);
-        }
+            if (error.response && error.response.data) {
+                console.error(error.response.data.message);
+                return toast({
+                    title: "Negative bonus",
+                    description: "The value of your bonus must be positive!",
+                    status: 'error',
+                    duration: 9000,
+                    isClosable: true,
+                    position: 'top-right'
+                });
+            } else {
+                console.error(error.message);
+            }        }
     };
 
     const handleRadioChange = (value) => {
@@ -82,7 +104,6 @@ const AddBonus = ({ show, onClose, userId }) => {
                                 name="descriere_bonus"
                                 value={formData.descriere_bonus}
                                 onChange={handleChange}
-                                required
                             />
                         </FormControl>
 

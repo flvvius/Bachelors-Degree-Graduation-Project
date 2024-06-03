@@ -1,5 +1,5 @@
 const { where } = require('sequelize');
-const {task: TaskDB} = require('../models');
+const {task: TaskDB, task} = require('../models');
 const {user: UserDb} = require('../models');
 const {userTask: userTaskDB} = require('../models')
 
@@ -10,13 +10,33 @@ const controller = {
     add: async (req, res) => {
         const { taskToCreate, userIds } = req.body;
     
+        if (!taskToCreate || !taskToCreate.titlu || taskToCreate.titlu.length === 0) {
+            return res.status(400).json({ message: "no_title" });
+        }
+    
+        if (!userIds || userIds.length === 0) {
+            return res.status(400).json({ message: "no_user" });
+        }
+    
+        const deadlineDate = new Date(taskToCreate.deadline);
+        if (isNaN(deadlineDate.getTime())) {
+            return res.status(400).json({ message: "no_date" });
+        }
+    
+        const currentDate = new Date();
+        if (deadlineDate.getTime() <= currentDate.getTime()) {
+            return res.status(400).json({ message: "invalid_date" });
+        }
+
+        if (!taskToCreate.importanta) {
+            return res.status(400).json({ message: "no_importanta" });
+        }
+    
         try {
-            for (let i = 0; i < userIds.length; i++) {
-                let user = await UserDb.findByPk(userIds[i]);
+            for (const userId of userIds) {
+                const user = await UserDb.findByPk(userId);
                 if (!user) {
-                    return res.status(400).json({
-                        message: "Nu exista user"
-                    });
+                    return res.status(400).json({ message: "Nu exista user" });
                 }
             }
     
@@ -33,11 +53,12 @@ const controller = {
     
             await Promise.all(userTaskPromises);
     
-            return res.status(200).json({ message: "Ai asignat cu succes task-ul" });
+            return res.status(201).json({ message: "Ai asignat cu succes task-ul" });
         } catch (err) {
-            return res.status(500).send(err);
+            return res.status(500).json({ message: err.message });
         }
     },
+    
 
     getAll: async (req, res) => {
         try {

@@ -7,6 +7,7 @@ import User from "./User";
 const Task = ({ task, updateTask, user, esteColectiv }) => {
     const [localTask, setLocalTask] = useState(task);
     const { isOpen, onOpen, onClose } = useDisclosure();
+    const { isOpen: isConfirmOpen, onOpen: onConfirmOpen, onClose: onConfirmClose } = useDisclosure();
     const [users, setUsers] = useState([]);
     const [selectedUser, setSelectedUser] = useState(null);
     const { isOpen: isUserOpen, onOpen: onUserOpen, onClose: onUserClose } = useDisclosure();
@@ -22,6 +23,15 @@ const Task = ({ task, updateTask, user, esteColectiv }) => {
         } catch (err) {
             console.error("error updating task: ", err);
         }
+    };
+
+    const handleFinalizeClick = () => {
+        onConfirmOpen();
+    };
+
+    const handleConfirmFinalize = async () => {
+        onConfirmClose();
+        await handleClick();
     };
 
     const handleUserClick = (user) => {
@@ -60,7 +70,7 @@ const Task = ({ task, updateTask, user, esteColectiv }) => {
                         </Box>}
 
                         {localTask.data_finalizare ? null : (
-                            <Button colorScheme="teal" onClick={handleClick}>Finalizeaza</Button>
+                            <Button colorScheme="teal" onClick={handleFinalizeClick}>Finalizeaza</Button>
                         )}
                         <Box mt={3}>
                             <Button colorScheme="teal" onClick={onOpen}>Acorda feedback pentru acest task</Button>
@@ -90,6 +100,23 @@ const Task = ({ task, updateTask, user, esteColectiv }) => {
                         <Button colorScheme="blue" mr={3} onClick={onUserClose}>
                             Close
                         </Button>
+                    </ModalFooter>
+                </ModalContent>
+            </Modal>
+
+            <Modal isOpen={isConfirmOpen} onClose={onConfirmClose}>
+                <ModalOverlay />
+                <ModalContent>
+                    <ModalHeader>Confirm Finalization</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody>
+                        <Text>Are you sure you want to finalize this task?</Text>
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button colorScheme="teal" mr={3} onClick={handleConfirmFinalize}>
+                            Yes
+                        </Button>
+                        <Button variant="ghost" onClick={onConfirmClose}>No</Button>
                     </ModalFooter>
                 </ModalContent>
             </Modal>

@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Box, Button, Heading, Text, useToast, CircularProgress, CircularProgressLabel, Flex } from '@chakra-ui/react';
+import { Box, Button, Heading, Text, useToast, CircularProgress, CircularProgressLabel, Flex, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, useDisclosure } from '@chakra-ui/react';
 import { useAuth } from '../hooks/useAuth';
 
 const Pontaj = () => {
     const { user, setUser } = useAuth();
+    const { isOpen, onOpen, onClose } = useDisclosure();
 
     const currentDate = new Date();
     const [checkInDate, setCheckInDate] = useState(null);
@@ -19,7 +20,7 @@ const Pontaj = () => {
     const [elapsedTime, setElapsedTime] = useState(0);
     const toast = useToast();
 
-    const totalWorkTime = 8 * 60 * 60 * 1000; // 8 hours in milliseconds
+    const totalWorkTime = 8 * 60 * 60 * 1000;
 
     useEffect(() => {
         let interval = null;
@@ -71,7 +72,14 @@ const Pontaj = () => {
 
     const handleCheckIn = () => {
         if (checkInDate != null) {
-            return;
+            return toast({
+                title: "You can't check-in",
+                description: "You already checked-in earlier!",
+                status: 'error',
+                duration: 9000,
+                isClosable: true,
+                position: 'top-right'
+            });
         }
 
         const currentDate = new Date();
@@ -134,6 +142,15 @@ const Pontaj = () => {
         }
     };
 
+    const handleCheckOutClick = () => {
+        onOpen();
+    };
+
+    const handleConfirmCheckOut = async () => {
+        onClose();
+        await handleCheckOut();
+    };
+
     const handlePauseResume = () => {
         setIsPaused(prevIsPaused => !prevIsPaused);
     };
@@ -157,7 +174,7 @@ const Pontaj = () => {
                     <Button colorScheme="teal" onClick={handleCheckIn} mt={2}>
                         Check-In
                     </Button>
-                    <Button colorScheme="teal" onClick={handleCheckOut} mt={2}>
+                    <Button colorScheme="teal" onClick={handleCheckOutClick} mt={2}>
                         Check-Out
                     </Button>
                     {checkInDate && !checkOutDate && <Button colorScheme={isPaused ? "teal" : "red"} onClick={handlePauseResume} mt={2}>
@@ -190,7 +207,23 @@ const Pontaj = () => {
                 </Box>
             </Flex>
 
-            
+            <Modal isOpen={isOpen} onClose={onClose}>
+                <ModalOverlay />
+                <ModalContent>
+                    <ModalHeader>Confirm Check-Out</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody>
+                        <Text>Are you sure you want to check out?</Text>
+                        {!checkOutDate && <Text>You are <strong>{formatTime(Math.floor(remainingTime / 1000))}</strong> away from reaching the daily routine!</Text>}
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button colorScheme="teal" mr={3} onClick={handleConfirmCheckOut}>
+                            Yes
+                        </Button>
+                        <Button variant="ghost" onClick={onClose}>No</Button>
+                    </ModalFooter>
+                </ModalContent>
+            </Modal>
         </Box>
     );
 };

@@ -5,6 +5,9 @@ const controller = {
 
     add: async (req, res) => {
         const pontajToCreate = req.body;
+
+        
+
         try {
             await pontajDB.create(pontajToCreate);
             res.status(200).send(pontajToCreate);

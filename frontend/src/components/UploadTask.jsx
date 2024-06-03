@@ -65,7 +65,6 @@ const UploadTask = ({ users, onSubmit }) => {
                         name="titlu"
                         value={formData.titlu}
                         onChange={handleChange}
-                        required
                     />
                 </FormControl>
                 <FormControl mb={4}>
@@ -75,18 +74,16 @@ const UploadTask = ({ users, onSubmit }) => {
                         name="descriere"
                         value={formData.descriere}
                         onChange={handleChange}
-                        required
                     />
                 </FormControl>
                 <FormControl mb={4}>
                     <FormLabel htmlFor="deadline">Deadline</FormLabel>
                     <Input
-                        type="date"
+                        type="datetime-local"
                         id="deadline"
                         name="deadline"
                         value={formData.deadline}
                         onChange={handleChange}
-                        required
                     />
                 </FormControl>
                 <FormControl mb={4}>
@@ -96,7 +93,6 @@ const UploadTask = ({ users, onSubmit }) => {
                         name="importanta"
                         value={formData.importanta}
                         onChange={handleChange}
-                        required
                     >
                         <option value="">Selectează importanța</option>
                         <option value="low">Low</option>
@@ -113,7 +109,6 @@ const UploadTask = ({ users, onSubmit }) => {
                         value={formData.userIds}
                         onChange={handleUserSelect}
                         size="md"
-                        required
                     >
                         {users.map((user) => (
                             user.apartineFirmei && (

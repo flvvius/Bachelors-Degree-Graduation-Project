@@ -3,10 +3,12 @@ import axios from 'axios';
 import User from '../components/User';
 import UploadTask from '../components/UploadTask';
 import { useNavigate } from 'react-router-dom';
-import { Box, Button, Flex, Heading, Stack, VStack, useColorModeValue } from '@chakra-ui/react';
+import { Box, Button, Flex, Heading, Stack, VStack, useColorModeValue, useToast } from '@chakra-ui/react';
 
 const HomeAdmin = ({ user }) => {
     const [users, setUsers] = useState([]);
+
+    const toast = useToast();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -40,8 +42,72 @@ const HomeAdmin = ({ user }) => {
 
         try {
             await axios.post("http://localhost:8080/api/task/add", data, { withCredentials: true });
+            return toast({
+                title: "Success",
+                description: "You successfully submitted the task!",
+                status: 'success',
+                duration: 9000,
+                isClosable: true,
+                position: 'top-right'
+            });
         } catch (err) {
-            console.log(err);
+            console.error(err.response.data.message);
+            if (err.response.data.message == "no_title") {
+                return toast({
+                    title: "No title provided",
+                    description: "You need to provide a title for the task!",
+                    status: 'error',
+                    duration: 9000,
+                    isClosable: true,
+                    position: 'top-right'
+                });
+            } else if (err.response.data.message == "no_user") {
+                return toast({
+                    title: "No users selected",
+                    description: "You need to select at least one user for the task!",
+                    status: 'error',
+                    duration: 9000,
+                    isClosable: true,
+                    position: 'top-right'
+                });
+            } else if (err.response.data.message == "no_user") {
+                return toast({
+                    title: "No users selected",
+                    description: "You need to select at least one user for the task!",
+                    status: 'error',
+                    duration: 9000,
+                    isClosable: true,
+                    position: 'top-right'
+                });
+            } else if (err.response.data.message == "no_date") {
+                return toast({
+                    title: "No deadline selected",
+                    description: "You need to select a deadline for the task!",
+                    status: 'error',
+                    duration: 9000,
+                    isClosable: true,
+                    position: 'top-right'
+                });
+            } else if (err.response.data.message == "invalid_date") {
+                return toast({
+                    title: "Invalid deadline",
+                    description: "You need to select a valid deadline for the task!",
+                    status: 'error',
+                    duration: 9000,
+                    isClosable: true,
+                    position: 'top-right'
+                });
+            } else if (err.response.data.message == "no_importanta") {
+                return toast({
+                    title: "No importance selected",
+                    description: "You need to select a valid importance level for the task!",
+                    status: 'error',
+                    duration: 9000,
+                    isClosable: true,
+                    position: 'top-right'
+                });
+            }
+            
         }
     };
 
