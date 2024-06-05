@@ -1,6 +1,23 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Box, Button, Heading, Text, useToast, CircularProgress, CircularProgressLabel, Flex, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, useDisclosure } from '@chakra-ui/react';
+import {
+    Box,
+    Button,
+    Heading,
+    Text,
+    useToast,
+    CircularProgress,
+    CircularProgressLabel,
+    Flex,
+    Modal,
+    ModalOverlay,
+    ModalContent,
+    ModalHeader,
+    ModalFooter,
+    ModalBody,
+    ModalCloseButton,
+    useDisclosure
+} from '@chakra-ui/react';
 import { useAuth } from '../hooks/useAuth';
 
 const Pontaj = () => {
@@ -21,6 +38,17 @@ const Pontaj = () => {
     const toast = useToast();
 
     const totalWorkTime = 8 * 60 * 60 * 1000;
+
+    useEffect(() => {
+        const savedCheckInDate = localStorage.getItem('checkInDate');
+        if (savedCheckInDate) {
+            const checkInDate = new Date(savedCheckInDate);
+            setCheckInDate(checkInDate);
+            const currentTime = new Date().getTime();
+            const elapsedTime = currentTime - checkInDate.getTime();
+            setElapsedTime(elapsedTime);
+        }
+    }, []);
 
     useEffect(() => {
         let interval = null;
@@ -83,6 +111,7 @@ const Pontaj = () => {
         }
 
         const currentDate = new Date();
+        localStorage.setItem('checkInDate', currentDate.toISOString());
 
         setPontaj((prevPontaj) => ({
             ...prevPontaj,
@@ -121,7 +150,7 @@ const Pontaj = () => {
             cuantificareTimp: timp
         };
         setUser(updatedUser);
-        
+
         await axios.put(`http://localhost:8080/api/user/update/${updatedUser.id}`, updatedUser, { withCredentials: true });
         axios.defaults.withCredentials = true;
 
@@ -133,6 +162,7 @@ const Pontaj = () => {
 
         setPontaj(updatedPontaj);
         setCheckOutDate(currentDate);
+        localStorage.removeItem('checkInDate');
 
         try {
             const response = await axios.post("http://localhost:8080/api/pontaj/add", updatedPontaj, { withCredentials: true });
@@ -180,7 +210,6 @@ const Pontaj = () => {
                     {checkInDate && !checkOutDate && <Button colorScheme={isPaused ? "teal" : "red"} onClick={handlePauseResume} mt={2}>
                         {isPaused ? 'Resume' : 'Pause'}
                     </Button>}
-                    
                 </Flex>
 
                 <Box mb={4}>
