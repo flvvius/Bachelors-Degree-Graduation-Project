@@ -4,7 +4,8 @@ import Task from "../components/Task";
 import Feedback from "../components/UserFeedback";
 import Pontaj from "../components/Pontaj";
 import Bonus from "../components/Bonus";
-import { Box, Button, Flex, Heading, Stack } from "@chakra-ui/react";
+import { Box, Button, Flex, Heading, Stack, useColorModeValue } from "@chakra-ui/react";
+import * as consts from '../constants'
 
 const HomeUser = ({ user }) => {
     const [tasks, setTasks] = useState([]);
@@ -60,8 +61,11 @@ const HomeUser = ({ user }) => {
         setShowModal(false);
     };
 
+    const bg = useColorModeValue('gray.100', 'gray.700');
+    const color = useColorModeValue('black', 'white');
+
     return (
-        <Box p={5}>
+        <Box p={5} bg={bg}>
             <Flex mb={5}>
                 <Box flex="1">
                     <Pontaj user={user} />
@@ -105,7 +109,7 @@ const HomeUser = ({ user }) => {
             </Flex>
 
             <Box mt={10}>
-                <Button colorScheme="teal" onClick={handleOpenModal}>Acorda feedback pentru ziua de lucru</Button>
+                <Button colorScheme="blue" onClick={handleOpenModal}>Acorda feedback pentru ziua de lucru</Button>
                 <Feedback show={showModal} onClose={handleCloseModal} userId={user.id} taskId={null} />
             </Box>
 

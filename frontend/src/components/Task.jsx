@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Box, Button, Text, VStack, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter } from "@chakra-ui/react";
+import { Box, Button, Text, VStack, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, useColorModeValue } from "@chakra-ui/react";
 import Feedback from "./UserFeedback";
 import User from "./User";
 
@@ -52,8 +52,13 @@ const Task = ({ task, updateTask, user, esteColectiv }) => {
         fetchData();
     }, [localTask.id]);
 
+    const bgColectiv = useColorModeValue("green.200", "#243325");
+    const bg = useColorModeValue("gray.300", "gray.800");
+    const btnColor = useColorModeValue("blue", "blue");
+    const numeEchipa = useColorModeValue("black", "peachpuff")
+
     return (
-        <Box p={5} borderWidth="1px" borderRadius="lg" shadow="md" backgroundColor={esteColectiv ? "teal" : ""}> {/* aici sa modific culoarea */}
+        <Box p={5} borderWidth="1px" borderRadius="lg" shadow="md" backgroundColor={esteColectiv ? bgColectiv : bg}> {/* aici sa modific culoarea */}
             <VStack align="start" spacing={3}>
                 <Text fontSize="md"><strong>Titlu:</strong> {localTask.titlu}</Text>
                 <Text fontSize="md"><strong>Descriere:</strong> {localTask.descriere}</Text>
@@ -65,15 +70,15 @@ const Task = ({ task, updateTask, user, esteColectiv }) => {
                         {esteColectiv && <Box>
                             <Text fontSize="md"><strong>Echipa:</strong></Text>
                             {users.map((obj) => (
-                                <Text key={obj.id} paddingLeft="25px" color="peachpuff">{obj.nume}</Text>
+                                <Text key={obj.id} paddingLeft="25px" color={numeEchipa}>{obj.nume}</Text>
                             ))}
                         </Box>}
 
                         {localTask.data_finalizare ? null : (
-                            <Button colorScheme="teal" onClick={handleFinalizeClick}>Finalizeaza</Button>
+                            <Button colorScheme={btnColor} onClick={handleFinalizeClick}>Finalizeaza</Button>
                         )}
                         <Box mt={3}>
-                            <Button colorScheme="teal" onClick={onOpen}>Acorda feedback pentru acest task</Button>
+                            <Button colorScheme={btnColor} onClick={onOpen}>Acorda feedback pentru acest task</Button>
                             <Feedback show={isOpen} onClose={onClose} userId={user.id} taskId={task.id} />
                         </Box>
                     </>
@@ -113,7 +118,7 @@ const Task = ({ task, updateTask, user, esteColectiv }) => {
                         <Text>Are you sure you want to finalize this task?</Text>
                     </ModalBody>
                     <ModalFooter>
-                        <Button colorScheme="teal" mr={3} onClick={handleConfirmFinalize}>
+                        <Button colorScheme={btnColor} mr={3} onClick={handleConfirmFinalize}>
                             Yes
                         </Button>
                         <Button variant="ghost" onClick={onConfirmClose}>No</Button>
