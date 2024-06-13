@@ -46,7 +46,7 @@ app.use(passport.session());
 
 app.use("/api", router);
 
-app.use('/uploads', express.static('uploads')); // ???
+app.use('/uploads', express.static('uploads'));
 
 app.get("/reset", async (req,res) => {
     try {

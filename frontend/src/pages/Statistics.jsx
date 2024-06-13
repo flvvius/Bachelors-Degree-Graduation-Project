@@ -1,4 +1,4 @@
-import { Box, Flex } from "@chakra-ui/react";
+import { Box, Flex, useColorModeValue } from "@chakra-ui/react";
 import CustomPieChart from "../components/CustomPieChart";
 import CustomPieChart2 from "../components/CustomPieChart2";
 import CustomBarChart from "../components/CustomBarChart";
@@ -7,9 +7,12 @@ import CalculPontaj from "../components/CalculPontaj";
 import SatisfactieAngajati from "../components/SatisfactieAngajati";
 
 const Statistics = () => {
+
+    const bg = useColorModeValue("gray.200", "gray.800");
+
     return (
         <Box p={5}>
-            <Flex p={5} alignItems="center" justifyContent="center">
+            <Flex p={5} alignItems="center" justifyContent="center" bg={bg}>
                 <CustomPieChart />
                 <CustomPieChart2 />
             </Flex>

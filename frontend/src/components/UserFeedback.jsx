@@ -115,10 +115,10 @@ const UserFeedback = ({ show, onClose, userId, taskId }) => {
                             />
                         </FormControl>
 
-                        <Button type="submit" colorScheme="teal" mr={3}>
+                        <Button type="submit" colorScheme="blue" mr={3} mt={4}>
                             Submit
                         </Button>
-                        <Button onClick={onClose}>
+                        <Button onClick={onClose} mt={4}>
                             Cancel
                         </Button>
                     </form>

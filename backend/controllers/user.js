@@ -57,6 +57,20 @@ const controller = {
         }
     },
 
+    getUsersByIds: async (req, res) => {
+        const ids = req.body.ids;
+        try {
+            const users = await UserDb.findAll({
+                where: {
+                    id: ids
+                }
+            });
+            res.status(200).send(users);
+        } catch (err) {
+            res.status(500).send(err.message);
+        }
+    },
+
     deleteUser: async (req, res) => {
         const id = req.params.id;
         try {

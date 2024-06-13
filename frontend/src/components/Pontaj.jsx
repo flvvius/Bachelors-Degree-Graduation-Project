@@ -211,7 +211,7 @@ const Pontaj = () => {
                     <Button colorScheme={btnColor} onClick={handleCheckOutClick} mt={2}>
                         Check-Out
                     </Button>
-                    {checkInDate && !checkOutDate && <Button colorScheme={isPaused ? {btnColor} : "red"} onClick={handlePauseResume} mt={2}>
+                    {checkInDate && !checkOutDate && <Button colorScheme={isPaused ? "blue" : "red"} onClick={handlePauseResume} mt={2}>
                         {isPaused ? 'Resume' : 'Pause'}
                     </Button>}
                 </Flex>

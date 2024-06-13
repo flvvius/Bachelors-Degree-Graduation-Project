@@ -35,8 +35,8 @@ const Task = ({ task, updateTask, user, esteColectiv }) => {
     };
 
     const handleUserClick = (user) => {
-        setSelectedUser(user); // Set the selected user
-        onUserOpen(); // Open the User modal
+        setSelectedUser(user);
+        onUserOpen();
     };
 
     useEffect(() => {
@@ -87,7 +87,7 @@ const Task = ({ task, updateTask, user, esteColectiv }) => {
                     <Box>
                         <Text fontSize="md"><strong>Users:</strong></Text>
                         {users.map((obj) => (
-                            <Text key={obj.id} paddingLeft="25px" cursor="pointer" onClick={() => handleUserClick(obj)} color="peachpuff">{obj.nume}</Text>
+                            <Text key={obj.id} paddingLeft="25px" cursor="pointer" onClick={() => handleUserClick(obj)} color={numeEchipa}>{obj.nume}</Text>
                         ))}
                     </Box>
                 )}

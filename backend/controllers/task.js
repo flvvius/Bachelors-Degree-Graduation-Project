@@ -69,6 +69,20 @@ const controller = {
         }
     },
 
+    getTasksByIds: async (req, res) => {
+        const ids = req.body.ids;
+        try {
+            const tasks = await TaskDB.findAll({
+                where: {
+                    id: ids
+                }
+            });
+            res.status(200).send(tasks);
+        } catch (err) {
+            res.status(500).send(err.message);
+        }
+    },
+
     // to do
     getEsteTaskColectiv: async (req, res) => {
 

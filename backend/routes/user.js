@@ -9,6 +9,7 @@ router.get('/getAll', userController.getAll);
 router.get('/getAllUsersTasks', userController.getAllUserTasks);
 router.get('/getAllAngajati', userController.getAllAngajati);
 router.get('/get/:id', userController.getUserById);
+router.get('/getByIds', userController.getUsersByIds);
 router.delete('/delete/:id', userController.deleteUser);
 router.put('/update/:id', userController.updateUser);
 

@@ -2,7 +2,7 @@
 import { Box, Flex, HStack, Link, IconButton, useDisclosure, useColorModeValue, Stack, Button, useColorMode, Image } from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
-import logo from '../assets/logo.webp'
+import logo from '../assets/logo.png'
 
 const Navbar = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();

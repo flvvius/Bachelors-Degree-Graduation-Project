@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Box, Text, Stack, Image, Flex, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Button, useDisclosure } from "@chakra-ui/react";
+import { Box, Text, Stack, Image, Flex, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Button, useDisclosure, useColorModeValue } from "@chakra-ui/react";
 import Zoom from 'react-medium-image-zoom';
 import 'react-medium-image-zoom/dist/styles.css';
 
@@ -8,6 +8,8 @@ const AdminFeedback = ({ feedback }) => {
     const [angajat, setAngajat] = useState({});
     const [task, setTask] = useState({});
     const { isOpen, onOpen, onClose } = useDisclosure();
+
+    const bg = useColorModeValue('gray.300', 'gray.800');
 
     useEffect(() => {
         const fetchData = async () => {
@@ -29,7 +31,7 @@ const AdminFeedback = ({ feedback }) => {
     }, [feedback.idAngajat, feedback.idTask, feedback.tip_feedback]);
 
     return (
-        <Box p={5} borderWidth="1px" borderRadius="lg" shadow="md">
+        <Box p={5} borderWidth="1px" borderRadius="lg" shadow="md" bg={bg}>
             <Flex direction={['column', 'column', 'row']} alignItems="center">
                 <Stack spacing={3} flex="1">
                     <Text><strong>Tip feedback:</strong> {feedback.tip_feedback}</Text>

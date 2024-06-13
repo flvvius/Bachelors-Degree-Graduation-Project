@@ -11,6 +11,7 @@ router.get('/getTasksByUser/:id', taskController.getTasksByUser);
 router.get('/getFinishedTasksByUser/:id', taskController.getFinishedTasksByUser);
 router.get('/getUsersByTask/:id', taskController.getUsersByTask);
 router.get('/get/:id', taskController.getTaskById);
+router.get('/getByIds', taskController.getTasksByIds);
 router.put('/update/:id', taskController.update);
 
 

@@ -119,7 +119,7 @@ const UploadTask = ({ users, onSubmit }) => {
                         ))}
                     </Select>
                 </FormControl>
-                <Button type="submit" colorScheme="teal" width="full">
+                <Button type="submit" colorScheme="blue" width="full">
                     Submit
                 </Button>
             </form>

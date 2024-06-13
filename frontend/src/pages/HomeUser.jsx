@@ -4,14 +4,15 @@ import Task from "../components/Task";
 import Feedback from "../components/UserFeedback";
 import Pontaj from "../components/Pontaj";
 import Bonus from "../components/Bonus";
-import { Box, Button, Flex, Heading, Stack, useColorModeValue } from "@chakra-ui/react";
+import { Box, Button, Flex, Heading, Input, Stack, useColorModeValue } from "@chakra-ui/react";
 import * as consts from '../constants'
 
 const HomeUser = ({ user }) => {
     const [tasks, setTasks] = useState([]);
-    const [showModal, setShowModal] = useState(false);
     const [bonuses, setBonuses] = useState([]);
     const [esteColectivMap, setEsteColectivMap] = useState({});
+    const [searchQuery, setSearchQuery] = useState('');
+    const [showModal, setShowModal] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -61,6 +62,12 @@ const HomeUser = ({ user }) => {
         setShowModal(false);
     };
 
+    const handleSearchChange = (e) => {
+        setSearchQuery(e.target.value);
+    };
+
+    const filteredTasks = tasks.filter(task => task.titlu.toLowerCase().includes(searchQuery.toLowerCase()));
+
     const bg = useColorModeValue('gray.100', 'gray.700');
     const color = useColorModeValue('black', 'white');
 
@@ -72,12 +79,20 @@ const HomeUser = ({ user }) => {
                 </Box>
             </Flex>
 
+            <Input 
+                placeholder="Search tasks" 
+                value={searchQuery}
+                onChange={handleSearchChange}
+                mb={4}
+                border="1px solid gray"
+            />
+
             <Flex justify="space-between" alignItems="flex-start" height="50vh">
                 <Box flex="1" mr={4} maxW="50%">
                     <Heading as="h2" size="lg" mb={4}>Active Tasks</Heading>
                     <Box overflowY="auto" maxH="45vh">
                         <Stack spacing={4}>
-                            {tasks.filter(task => task.data_finalizare == null).map(task => (
+                            {filteredTasks.filter(task => task.data_finalizare == null).map(task => (
                                 <Task
                                     key={task.id}
                                     task={task}
@@ -94,7 +109,7 @@ const HomeUser = ({ user }) => {
                     <Heading as="h2" size="lg" mb={4}>Finished Tasks</Heading>
                     <Box overflowY="auto" maxH="45vh">
                         <Stack spacing={4}>
-                            {tasks.filter(task => task.data_finalizare != null).map(task => (
+                            {filteredTasks.filter(task => task.data_finalizare != null).map(task => (
                                 <Task
                                     key={task.id}
                                     task={task}

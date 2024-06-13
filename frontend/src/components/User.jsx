@@ -70,9 +70,9 @@ const User = ({ user }) => {
         setShowModal(false);
     };
 
-    const adminBgColor = useColorModeValue('teal.100', 'teal.900');
-    const userBgColor = useColorModeValue('white', 'gray.800');
-    const nameColor = useColorModeValue('teal.600', 'teal.200');
+    const adminBgColor = useColorModeValue("green.200", "#243325");
+    const userBgColor = useColorModeValue('gray.300', 'gray.800');
+    const nameColor = useColorModeValue('blue.700', 'blue.200');
 
     const formatTime = (seconds) => {
         const hours = Math.floor(seconds / 3600);
@@ -99,11 +99,11 @@ const User = ({ user }) => {
                 <Text>
                     {user.cuantificareTimp >= 0 ? (
                         <>
-                        worked extra <Text as="span" fontWeight="bold" color="tan">{formatTime(Math.floor(user.cuantificareTimp))}</Text>
+                        worked extra <Text as="span" fontWeight="bold" color={nameColor}>{formatTime(Math.floor(user.cuantificareTimp))}</Text>
                         </>
                     ) : (
                         <>
-                        worked <Text as="span" fontWeight="bold" color="tan">{formatTime(Math.abs(Math.floor(user.cuantificareTimp)))}</Text> less than expected
+                        worked <Text as="span" fontWeight="bold" color={nameColor}>{formatTime(Math.abs(Math.floor(user.cuantificareTimp)))}</Text> less than expected
                         </>
                     )}
                 </Text>
@@ -116,7 +116,7 @@ const User = ({ user }) => {
                     </Select>
                 </FormControl>
                 <Stack direction={{ base: 'column', md: 'row' }} spacing={4} w="100%">
-                    <Button colorScheme="teal" onClick={handleOpenModal} w="full">
+                    <Button colorScheme="blue" onClick={handleOpenModal} w="full">
                         Acorda bonus
                     </Button>
                     <Button colorScheme="red" onClick={onOpen} w="full">
@@ -126,7 +126,6 @@ const User = ({ user }) => {
             </VStack>
             <AddBonus show={showModal} onClose={handleCloseModal} userId={user.id} />
 
-            {/* Delete Confirmation Modal */}
             <Modal isOpen={isOpen} onClose={onClose}>
                 <ModalOverlay />
                 <ModalContent>
