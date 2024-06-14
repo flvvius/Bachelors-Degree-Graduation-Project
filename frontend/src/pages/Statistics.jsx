@@ -12,6 +12,8 @@ const Statistics = () => {
 
     return (
         <Box p={5}>
+            <CalculPontaj />
+            <SatisfactieAngajati />
             <Flex p={5} alignItems="center" justifyContent="center" bg={bg}>
                 <CustomPieChart />
                 <CustomPieChart2 />
@@ -22,8 +24,6 @@ const Statistics = () => {
             <Flex p={20}>
                 <CustomBarChart2 />
             </Flex>
-            <CalculPontaj />
-            <SatisfactieAngajati />
         </Box>
         
     )
