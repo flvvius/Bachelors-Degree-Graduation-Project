@@ -3,15 +3,16 @@ import {Button, FormControl, FormLabel, Input, Modal, ModalOverlay, ModalContent
 import axios from 'axios';
 
 const UserFeedback = ({ show, onClose, userId, taskId }) => {
-    const tipFeedback = taskId == null ? "Zi de lucru" : "Task";
+    const tipFeedback = taskId === null ? "Zi de lucru" : "Task";
 
     const toast = useToast();
 
     const [file, setFile] = useState(null);
     const [formData, setFormData] = useState({
         tip_feedback: tipFeedback,
-        nota: null,
+        nota: '',
         mesaj: "",
+        data: new Date().toISOString(),
         idAngajat: userId,
         idTask: taskId
     });
@@ -44,7 +45,7 @@ const UserFeedback = ({ show, onClose, userId, taskId }) => {
                 },
             });
             onClose();
-            return toast({
+            toast({
                 title: "Success",
                 description: `You successfully rated this ${formData.tip_feedback === "Task" ? "task" : "working day"}!`,
                 status: 'success',
@@ -54,7 +55,7 @@ const UserFeedback = ({ show, onClose, userId, taskId }) => {
             });
         } catch (error) {
             console.error(error);
-            return toast({
+            toast({
                 title: "Invalid rating",
                 description: "You have to pick a rating from 1 to 10!",
                 status: 'error',
@@ -92,6 +93,9 @@ const UserFeedback = ({ show, onClose, userId, taskId }) => {
                                 name="nota"
                                 value={formData.nota}
                                 onChange={handleChange}
+                                min="1"
+                                max="10"
+                                required
                             />
                         </FormControl>
 

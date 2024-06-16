@@ -26,6 +26,11 @@ const Feedback = (db, DataTypes) => db.define("Feedback", {
         allowNull: true,
     },
 
+    data: {
+        type: DataTypes.DATE,
+        allowNull: true
+    },
+
     idAngajat: {
         type: DataTypes.INTEGER,
         allowNull: false

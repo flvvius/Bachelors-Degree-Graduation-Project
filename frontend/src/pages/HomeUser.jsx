@@ -5,7 +5,7 @@ import Feedback from "../components/UserFeedback";
 import Pontaj from "../components/Pontaj";
 import Bonus from "../components/Bonus";
 import { Box, Button, Flex, Heading, Input, Stack, useColorModeValue } from "@chakra-ui/react";
-import * as consts from '../constants'
+import { format } from 'date-fns';
 
 const HomeUser = ({ user }) => {
     const [tasks, setTasks] = useState([]);
@@ -20,8 +20,13 @@ const HomeUser = ({ user }) => {
                 axios.get(`http://localhost:8080/api/task/getTasksByUser/${user.id}`, { withCredentials: true }),
                 axios.get(`http://localhost:8080/api/bonus/getBonusesByUserId/${user.id}`, { withCredentials: true })
             ]);
-            
-            setTasks(tasksResponse.data);
+
+            const formattedTasks = tasksResponse.data.map(task => ({
+                ...task,
+                deadline: task.deadline ? format(new Date(task.deadline), 'yyyy-MM-dd HH:mm:ss') : null
+            }));
+
+            setTasks(formattedTasks);
             setBonuses(bonusesResponse.data);
 
             const esteColectivPromises = tasksResponse.data.map(task =>
@@ -48,10 +53,15 @@ const HomeUser = ({ user }) => {
         fetchData();
     }, [user.id]);
 
-    const updateTask = (updatedTask) => {
-        setTasks(prevTasks => prevTasks.map(
-            task => task.id === updatedTask.id ? updatedTask : task
-        ));
+    const updateTask = async (updatedTask) => {
+        try {
+            await axios.put(`http://localhost:8080/api/task/update/${updatedTask.id}`, updatedTask, { withCredentials: true });
+            setTasks(prevTasks => prevTasks.map(
+                task => task.id === updatedTask.id ? updatedTask : task
+            ));
+        } catch (error) {
+            console.error("Failed to update task", error);
+        }
     };
 
     const handleOpenModal = () => {
@@ -128,11 +138,9 @@ const HomeUser = ({ user }) => {
                 <Feedback show={showModal} onClose={handleCloseModal} userId={user.id} taskId={null} />
             </Box>
 
-            <Heading as="h2" size="lg" mt={10} mb={4}>Bonusuri</Heading>
-            <Flex justify="space-between" wrap="wrap" height="50vh">
                 <Box flex="1" minW="300px" mr={4} maxW="50%">
-                    <Heading as="h3" size="md" mb={4}>Bonusuri neaplicate</Heading>
-                    <Box overflowY="auto" maxH="45vh">
+                <Heading as="h2" size="lg" mt={10} mb={4}>Bonusuri</Heading>
+                <Box overflowY="auto" maxH="45vh">
                         <Stack spacing={4}>
                             {bonuses.filter(bonus => !bonus.aplicat).map(bonus => (
                                 <Bonus key={bonus.id} user={user} bonus={bonus} />
@@ -140,18 +148,6 @@ const HomeUser = ({ user }) => {
                         </Stack>
                     </Box>
                 </Box>
-
-                <Box flex="1" minW="300px" maxW="50%">
-                    <Heading as="h3" size="md" mb={4}>Bonusuri aplicate</Heading>
-                    <Box overflowY="auto" maxH="45vh">
-                        <Stack spacing={4}>
-                            {bonuses.filter(bonus => bonus.aplicat).map(bonus => (
-                                <Bonus key={bonus.id} user={user} bonus={bonus} />
-                            ))}
-                        </Stack>
-                    </Box>
-                </Box>
-            </Flex>
         </Box>
     );
 };

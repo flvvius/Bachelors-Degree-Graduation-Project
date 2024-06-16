@@ -3,6 +3,7 @@ import axios from "axios";
 import { Box, Button, Text, VStack, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, useColorModeValue } from "@chakra-ui/react";
 import Feedback from "./UserFeedback";
 import User from "./User";
+import { formatISO } from 'date-fns';
 
 const Task = ({ task, updateTask, user, esteColectiv }) => {
     const [localTask, setLocalTask] = useState(task);
@@ -14,11 +15,10 @@ const Task = ({ task, updateTask, user, esteColectiv }) => {
 
     const handleClick = async () => {
         const date = new Date();
-        const updatedTask = { ...localTask, data_finalizare: date };
+        const updatedTask = { ...localTask, data_finalizare: formatISO(date) };
         setLocalTask(updatedTask);
 
         try {
-            await axios.put(`http://localhost:8080/api/task/update/${updatedTask.id}`, updatedTask, { withCredentials: true });
             updateTask(updatedTask);
         } catch (err) {
             console.error("error updating task: ", err);
@@ -58,7 +58,7 @@ const Task = ({ task, updateTask, user, esteColectiv }) => {
     const numeEchipa = useColorModeValue("black", "peachpuff")
 
     return (
-        <Box p={5} borderWidth="1px" borderRadius="lg" shadow="md" backgroundColor={esteColectiv ? bgColectiv : bg}> {/* aici sa modific culoarea */}
+        <Box p={5} borderWidth="1px" borderRadius="lg" shadow="md" backgroundColor={esteColectiv ? bgColectiv : bg}>
             <VStack align="start" spacing={3}>
                 <Text fontSize="md"><strong>Titlu:</strong> {localTask.titlu}</Text>
                 <Text fontSize="md"><strong>Descriere:</strong> {localTask.descriere}</Text>

@@ -4,7 +4,7 @@ const {user: userDB} = require('../models');
 const controller = {
 
     add: async (req, res) => {
-        const { tip_feedback, nota, mesaj, idAngajat, idTask } = req.body;
+        const { tip_feedback, nota, mesaj, data, idAngajat, idTask } = req.body;
         const photoPath = req.file ? req.file.path : null;
         const parsedIdTask = idTask ? parseInt(idTask, 10) : null;
 
@@ -13,6 +13,7 @@ const controller = {
             nota,
             mesaj,
             photoPath,
+            data,
             idAngajat,
             idTask: parsedIdTask
         }

@@ -194,7 +194,7 @@ const controller = {
     },
 
     update: async (req, res) => {
-        const {id} = req.params; // params sau body?
+        const {id} = req.params;
         const payload = req.body;
 
         try {
@@ -207,29 +207,6 @@ const controller = {
         }
 
     }
-
-    // updateTask: async (req, res) => {
-    //     const {userId} = req.params;
-    //     const payload = {
-    //         firstName: req.body.firstName,
-    //         lastName: req.body.lastName,
-    //         email: req.body.email,
-    //         password: req.body.password,
-    //         phone: req.body.phone,
-    //         university: req.body.university,
-    //         studyYear: req.body.studyYear,
-    //     };
-
-    //     try {
-    //         const user = await UserDb.findByPk(userId);
-    //         if (!user) return res.status(400).send();
-
-    //         const newUser = await user.update(payload)
-    //         res.status(200).send(newUser);
-    //     } catch (err) {
-    //         res.status(500).send(err.message);
-    //     }
-    // },
 };
 
 module.exports = controller;

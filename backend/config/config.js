@@ -10,6 +10,7 @@ const db = new Sequelize({
     password: process.env.PASSWORD || "",
     host: 'localhost',
     logging: false,
+    timezone: '+03:00',
     define: {
     charset: 'utf8',
     collate: 'utf8_general_ci',

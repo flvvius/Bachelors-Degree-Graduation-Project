@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Box, Text, Stack, Image, Flex, Modal, ModalOverlay, ModalContent, ModalHeader, ModalFooter, ModalBody, ModalCloseButton, Button, useDisclosure, useColorModeValue } from "@chakra-ui/react";
 import Zoom from 'react-medium-image-zoom';
 import 'react-medium-image-zoom/dist/styles.css';
+import { format } from 'date-fns';
 
 const AdminFeedback = ({ feedback }) => {
     const [angajat, setAngajat] = useState({});
@@ -30,6 +31,8 @@ const AdminFeedback = ({ feedback }) => {
         fetchData();
     }, [feedback.idAngajat, feedback.idTask, feedback.tip_feedback]);
 
+    const formattedDate = feedback.data ? format(new Date(feedback.data), 'dd/MM/yyyy HH:mm:ss') : '';
+
     return (
         <Box p={5} borderWidth="1px" borderRadius="lg" shadow="md" bg={bg}>
             <Flex direction={['column', 'column', 'row']} alignItems="center">
@@ -37,6 +40,7 @@ const AdminFeedback = ({ feedback }) => {
                     <Text><strong>Tip feedback:</strong> {feedback.tip_feedback}</Text>
                     <Text><strong>Nota:</strong> {feedback.nota}</Text>
                     <Text><strong>Mesaj:</strong> {feedback.mesaj}</Text>
+                    <Text><strong>Data:</strong> {formattedDate}</Text>
                     <Text><strong>Angajat:</strong> {angajat.nume}</Text>
                     {feedback.tip_feedback === "Task" && <Text><strong>Task:</strong> {task.titlu}</Text>}
                 </Stack>

@@ -12,9 +12,6 @@ import {
     ModalFooter,
     ModalBody,
     ModalCloseButton,
-    Radio,
-    RadioGroup,
-    Stack,
     Textarea,
     useToast,
 } from "@chakra-ui/react";
@@ -23,7 +20,7 @@ const AddBonus = ({ show, onClose, userId }) => {
     const [formData, setFormData] = useState({
         cuantum_bonus: 0,
         descriere_bonus: "",
-        aplicat: false,
+        data: new Date(),
         idUser: userId,
     });
 
@@ -105,16 +102,6 @@ const AddBonus = ({ show, onClose, userId }) => {
                                 value={formData.descriere_bonus}
                                 onChange={handleChange}
                             />
-                        </FormControl>
-
-                        <FormControl mt={4}>
-                            <FormLabel>Aplicat:</FormLabel>
-                            <RadioGroup onChange={handleRadioChange} value={String(formData.aplicat)}>
-                                <Stack direction="row">
-                                    <Radio value="true">Da</Radio>
-                                    <Radio value="false">Nu</Radio>
-                                </Stack>
-                            </RadioGroup>
                         </FormControl>
                     </ModalBody>
 

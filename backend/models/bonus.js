@@ -15,8 +15,8 @@ const Bonus = (db, DataTypes) => db.define("Bonus", {
         type: DataTypes.STRING
     },
 
-    aplicat: {
-        type: DataTypes.BOOLEAN
+    data: {
+        type: DataTypes.DATE
     },
 
     idUser: {
