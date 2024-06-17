@@ -2,19 +2,22 @@
 import { Box, Flex, HStack, Link, IconButton, useDisclosure, useColorModeValue, Stack, Button, useColorMode, Image } from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
-import logo from '../assets/logo.png'
+import { useAuth } from '../hooks/useAuth.js';
+import logo from '../assets/logo.png';
+import axios from 'axios';
 
 const Navbar = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { colorMode, toggleColorMode } = useColorMode();
   const bg = useColorModeValue('gray.100', 'gray.900');
   const hoverBg = useColorModeValue('gray.200', 'gray.700');
-
+  const { user, setUser } = useAuth();
   const navigate = useNavigate();
 
-  const handleLogout = async (e) => { // de implementat delogarea
+  const handleLogout = async (e) => {
     e.preventDefault();
-    await window.open(`http://localhost:8080/api/auth/logout`, "_self");
+    await window.open('http://localhost:8080/api/auth/logout', '_self');
+    setUser(null);
     navigate('/');
   };
 
@@ -50,17 +53,19 @@ const Navbar = () => {
             spacing={4}
             display={{ base: 'none', md: 'flex' }}>
             <NavLink>Home</NavLink>
-            <Button
-              px={2}
-              py={1}
-              rounded={'md'}
-              _hover={{
-                textDecoration: 'none',
-                bg: hoverBg,
-              }}
-              onClick={handleLogout}>
-              Logout
-            </Button>
+            {user && (
+              <Button
+                px={2}
+                py={1}
+                rounded={'md'}
+                _hover={{
+                  textDecoration: 'none',
+                  bg: hoverBg,
+                }}
+                onClick={handleLogout}>
+                Logout
+              </Button>
+            )}
           </HStack>
         </HStack>
         <Flex alignItems={'center'}>
@@ -74,17 +79,19 @@ const Navbar = () => {
         <Box pb={4} display={{ md: 'none' }}>
           <Stack as={'nav'} spacing={4}>
             <NavLink>Home</NavLink>
-            <Button
-              px={2}
-              py={1}
-              rounded={'md'}
-              _hover={{
-                textDecoration: 'none',
-                bg: hoverBg,
-              }}
-              onClick={handleLogout}>
-              Logout
-            </Button>
+            {user && (
+              <Button
+                px={2}
+                py={1}
+                rounded={'md'}
+                _hover={{
+                  textDecoration: 'none',
+                  bg: hoverBg,
+                }}
+                onClick={handleLogout}>
+                Logout
+              </Button>
+            )}
           </Stack>
         </Box>
       ) : null}

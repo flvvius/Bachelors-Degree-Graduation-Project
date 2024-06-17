@@ -8,12 +8,16 @@ import SatisfactieAngajati from "../components/SatisfactieAngajati";
 
 const Statistics = () => {
 
-    const bg = useColorModeValue("gray.200", "gray.800");
+    const bg = useColorModeValue("gray.200", "gray.700");
 
     return (
         <Box p={5}>
-            <CalculPontaj />
-            <SatisfactieAngajati />
+            <Box bg={bg} marginBottom={10}>
+                <CalculPontaj />
+            </Box>
+            <Box bg={bg} marginTop={10} marginBottom={10}>
+                <SatisfactieAngajati />
+            </Box>
             <Flex p={5} alignItems="center" justifyContent="center" bg={bg}>
                 <CustomPieChart />
                 <CustomPieChart2 />

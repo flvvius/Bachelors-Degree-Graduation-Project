@@ -153,7 +153,7 @@ const Pontaj = () => {
                 position: 'top-right'
             });
         }
-
+    
         if (checkInDate == null) {
             return toast({
                 title: "You can't check-out",
@@ -164,7 +164,7 @@ const Pontaj = () => {
                 position: 'top-right'
             });
         }
-
+    
         const overtime = (elapsedTime - totalWorkTime) / 1000;
         const timp = user.cuantificareTimp ? user.cuantificareTimp + overtime : overtime;
         const updatedUser = {
@@ -172,17 +172,18 @@ const Pontaj = () => {
             cuantificareTimp: timp
         };
         setUser(updatedUser);
-
+    
         try {
-            await axios.put(`http://localhost:8080/api/user/update/${updatedUser.id}`, updatedUser, { withCredentials: true });
-            axios.defaults.withCredentials = true;
-
             const currentDate = new Date();
             const updatedPontaj = {
                 ...pontaj,
+                check_in: checkInDate,
                 check_out: currentDate
             };
-
+    
+            await axios.put(`http://localhost:8080/api/user/update/${updatedUser.id}`, updatedUser, { withCredentials: true });
+            axios.defaults.withCredentials = true;
+    
             setPontaj(updatedPontaj);
             setCheckOutDate(currentDate);
             localStorage.removeItem('checkInDate');
@@ -190,7 +191,7 @@ const Pontaj = () => {
             localStorage.removeItem('isPaused');
             localStorage.removeItem('pauseTime');
             localStorage.removeItem('totalPausedDuration');
-
+    
             const response = await axios.post("http://localhost:8080/api/pontaj/add", updatedPontaj, { withCredentials: true });
             console.log(response);
             if (response.status === 200) {
@@ -215,6 +216,7 @@ const Pontaj = () => {
             });
         }
     };
+    
 
     const handleCheckOutClick = () => {
         onOpen();
@@ -274,14 +276,14 @@ const Pontaj = () => {
                 </Flex>
 
                 <Box mb={4}>
-                    {checkInDate && <Text>Check-In Date: {formatDate(checkInDate)}</Text>}
-                    {checkOutDate && <Text>Check-Out Date: {formatDate(checkOutDate)}</Text>}
+                    {checkInDate && <Text><strong>Check-In Date: {formatDate(checkInDate)}</strong></Text>}
+                    {checkOutDate && <Text><strong>Check-Out Date: {formatDate(checkOutDate)}</strong></Text>}
                 </Box>
 
                 {checkInDate && !checkOutDate && (
                     <Box>
-                        <Text>Elapsed Time: {formatTime(Math.floor(elapsedTime / 1000))}</Text>
-                        <Text>Remaining Time: {formatTime(Math.floor(remainingTime / 1000))}</Text>
+                        <Text><strong>Elapsed Time: {formatTime(Math.floor(elapsedTime / 1000))}</strong></Text>
+                        <Text><strong>Remaining Time: {formatTime(Math.floor(remainingTime / 1000))}</strong></Text>
                         <Box mt={4}>
                             <CircularProgress value={percentage} color='green.500' size="120px">
                                 <CircularProgressLabel>{`${percentage}%`}</CircularProgressLabel>
@@ -292,9 +294,20 @@ const Pontaj = () => {
 
                 <Box mt={4}>
                     <Text>
-                        {user.cuantificareTimp >= 0 ? `You worked extra ${formatTime(Math.floor(user.cuantificareTimp))}` : `You worked ${formatTime(Math.abs(Math.floor(user.cuantificareTimp)))} less`}
+                        <strong>
+                            {user.cuantificareTimp >= 0 ? (
+                                <>
+                                    You worked <Text as="span" color="green.500">extra</Text> {formatTime(Math.floor(user.cuantificareTimp))}
+                                </>
+                            ) : (
+                                <>
+                                    You worked {formatTime(Math.abs(Math.floor(user.cuantificareTimp)))} <Text as="span" color="red.500">less</Text>
+                                </>
+                            )}
+                        </strong>
                     </Text>
                 </Box>
+
             </Flex>
 
             <Modal isOpen={isOpen} onClose={onClose}>

@@ -86,6 +86,7 @@ const SatisfactieAngajati = () => {
 
     return (
         <Box p={5}>
+            <Text fontSize="xx-large" textAlign="center" marginBottom={30}>Feedback averages</Text>
             <Flex justify="space-between" alignItems="flex-start" width="100%">
                 <Box flex="1" mr={4}>
                     <VStack spacing={3}>

@@ -3,7 +3,7 @@ import axios from "axios";
 import { Box, Button, Text, VStack, useDisclosure, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, useColorModeValue } from "@chakra-ui/react";
 import Feedback from "./UserFeedback";
 import User from "./User";
-import { formatISO } from 'date-fns';
+import { formatISO, parseISO } from 'date-fns';
 
 const Task = ({ task, updateTask, user, esteColectiv }) => {
     const [localTask, setLocalTask] = useState(task);
@@ -19,7 +19,7 @@ const Task = ({ task, updateTask, user, esteColectiv }) => {
         setLocalTask(updatedTask);
 
         try {
-            updateTask(updatedTask);
+            await updateTask(updatedTask);
         } catch (err) {
             console.error("error updating task: ", err);
         }
@@ -55,16 +55,16 @@ const Task = ({ task, updateTask, user, esteColectiv }) => {
     const bgColectiv = useColorModeValue("green.200", "#243325");
     const bg = useColorModeValue("gray.300", "gray.800");
     const btnColor = useColorModeValue("blue", "blue");
-    const numeEchipa = useColorModeValue("black", "peachpuff")
+    const numeEchipa = useColorModeValue("black", "peachpuff");
 
     return (
-        <Box p={5} borderWidth="1px" borderRadius="lg" shadow="md" backgroundColor={esteColectiv ? bgColectiv : bg}>
+        <Box p={5} borderWidth="1px" borderRadius="lg" shadow="md" backgroundColor={bg}>
             <VStack align="start" spacing={3}>
                 <Text fontSize="md"><strong>Titlu:</strong> {localTask.titlu}</Text>
                 <Text fontSize="md"><strong>Descriere:</strong> {localTask.descriere}</Text>
-                <Text fontSize="md"><strong>Deadline:</strong> {localTask.deadline}</Text>
+                <Text fontSize="md"><strong>Deadline:</strong> {localTask.deadline ? new Date(parseISO(localTask.deadline)).toLocaleString() : "Nefinalizat"}</Text>
                 <Text fontSize="md"><strong>Importanta:</strong> {localTask.importanta}</Text>
-                <Text fontSize="md"><strong>Data finalizare:</strong> {localTask.data_finalizare ? new Date(localTask.data_finalizare).toLocaleString() : "Nefinalizat"}</Text>
+                <Text fontSize="md"><strong>Data finalizare:</strong> {localTask.data_finalizare ? new Date(parseISO(localTask.data_finalizare)).toLocaleString() : "Nefinalizat"}</Text>
                 {!user.esteAdmin && (
                     <>
                         {esteColectiv && <Box>

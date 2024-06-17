@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import Task from "../components/Task";
 import { useNavigate } from "react-router-dom";
 import { Box, Button, Flex, Heading, Input, SimpleGrid, useColorModeValue } from "@chakra-ui/react";
-import { format } from 'date-fns';
+import { formatISO } from 'date-fns';
 
 const ViewTasks = ({ user }) => {
     const [tasks, setTasks] = useState([]);
@@ -16,8 +16,8 @@ const ViewTasks = ({ user }) => {
                 const response = await axios.get(`http://localhost:8080/api/task/getAll`, { withCredentials: true });
                 const formattedTasks = response.data.map(task => ({
                     ...task,
-                    deadline: task.deadline ? format(new Date(task.deadline), 'dd/MM/yyyy HH:mm') : null,
-                    data_finalizare: task.data_finalizare ? format(new Date(task.data_finalizare), 'dd/MM/yyyy HH:mm:ss') : null
+                    deadline: task.deadline ? formatISO(new Date(task.deadline)) : null,
+                    data_finalizare: task.data_finalizare ? formatISO(new Date(task.data_finalizare)) : null
                 }));
                 setTasks(formattedTasks);
                 setFilteredTasks(formattedTasks);

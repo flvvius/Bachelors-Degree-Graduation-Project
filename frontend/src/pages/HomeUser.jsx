@@ -89,6 +89,11 @@ const HomeUser = ({ user }) => {
                 </Box>
             </Flex>
 
+            <Flex mt={10} justifyContent="center" alignItems="center" marginBottom={41}>
+                <Button colorScheme="blue" onClick={handleOpenModal}>Acorda feedback pentru ziua de lucru</Button>
+                <Feedback show={showModal} onClose={handleCloseModal} userId={user.id} taskId={null} />
+            </Flex>
+
             <Input 
                 placeholder="Search tasks" 
                 value={searchQuery}
@@ -97,57 +102,101 @@ const HomeUser = ({ user }) => {
                 border="1px solid gray"
             />
 
-            <Flex justify="space-between" alignItems="flex-start" height="50vh">
-                <Box flex="1" mr={4} maxW="50%">
-                    <Heading as="h2" size="lg" mb={4}>Active Tasks</Heading>
-                    <Box overflowY="auto" maxH="45vh">
-                        <Stack spacing={4}>
-                            {filteredTasks.filter(task => task.data_finalizare == null).map(task => (
-                                <Task
-                                    key={task.id}
-                                    task={task}
-                                    updateTask={updateTask}
-                                    user={user}
-                                    esteColectiv={esteColectivMap[task.id]}
-                                />
-                            ))}
-                        </Stack>
+            <Box mb={10}>
+                <Heading as="h2" size="lg" mb={4}>Active Tasks</Heading>
+                <Flex justify="space-between" alignItems="flex-start">
+                    <Box flex="1" mr={2}>
+                        <Heading as="h3" size="md" mb={2}>Individual</Heading>
+                        <Box overflowY="auto" maxH="45vh">
+                            <Stack spacing={4}>
+                                {filteredTasks.filter(task => task.data_finalizare == null && !esteColectivMap[task.id]).map(task => (
+                                    <Task
+                                        key={task.id}
+                                        task={task}
+                                        updateTask={updateTask}
+                                        user={user}
+                                        esteColectiv={esteColectivMap[task.id]}
+                                    />
+                                ))}
+                            </Stack>
+                        </Box>
                     </Box>
-                </Box>
-
-                <Box flex="1" maxW="50%">
-                    <Heading as="h2" size="lg" mb={4}>Finished Tasks</Heading>
-                    <Box overflowY="auto" maxH="45vh">
-                        <Stack spacing={4}>
-                            {filteredTasks.filter(task => task.data_finalizare != null).map(task => (
-                                <Task
-                                    key={task.id}
-                                    task={task}
-                                    updateTask={updateTask}
-                                    user={user}
-                                    esteColectiv={esteColectivMap[task.id]}
-                                />
-                            ))}
-                        </Stack>
+                    <Box flex="1" ml={2}>
+                        <Heading as="h3" size="md" mb={2}>Collective</Heading>
+                        <Box overflowY="auto" maxH="45vh">
+                            <Stack spacing={4}>
+                                {filteredTasks.filter(task => task.data_finalizare == null && esteColectivMap[task.id]).map(task => (
+                                    <Task
+                                        key={task.id}
+                                        task={task}
+                                        updateTask={updateTask}
+                                        user={user}
+                                        esteColectiv={esteColectivMap[task.id]}
+                                    />
+                                ))}
+                            </Stack>
+                        </Box>
                     </Box>
-                </Box>
-            </Flex>
-
-            <Box mt={10}>
-                <Button colorScheme="blue" onClick={handleOpenModal}>Acorda feedback pentru ziua de lucru</Button>
-                <Feedback show={showModal} onClose={handleCloseModal} userId={user.id} taskId={null} />
+                </Flex>
             </Box>
 
-                <Box flex="1" minW="300px" mr={4} maxW="50%">
+            <Box mb={10}>
+                <Heading as="h2" size="lg" mb={4}>Finished Tasks</Heading>
+                <Flex justify="space-between" alignItems="flex-start">
+                    <Box flex="1" mr={2}>
+                        <Heading as="h3" size="md" mb={2}>Individual</Heading>
+                        <Box overflowY="auto" maxH="45vh">
+                            <Stack spacing={4}>
+                                {filteredTasks.filter(task => task.data_finalizare != null && !esteColectivMap[task.id]).map(task => (
+                                    <Task
+                                        key={task.id}
+                                        task={task}
+                                        updateTask={updateTask}
+                                        user={user}
+                                        esteColectiv={esteColectivMap[task.id]}
+                                    />
+                                ))}
+                            </Stack>
+                        </Box>
+                    </Box>
+                    <Box flex="1" ml={2}>
+                        <Heading as="h3" size="md" mb={2}>Collective</Heading>
+                        <Box overflowY="auto" maxH="45vh">
+                            <Stack spacing={4}>
+                                {filteredTasks.filter(task => task.data_finalizare != null && esteColectivMap[task.id]).map(task => (
+                                    <Task
+                                        key={task.id}
+                                        task={task}
+                                        updateTask={updateTask}
+                                        user={user}
+                                        esteColectiv={esteColectivMap[task.id]}
+                                    />
+                                ))}
+                            </Stack>
+                        </Box>
+                    </Box>
+                </Flex>
+            </Box>
+
+            <Box flex="1" w="100%" mr={4}>
                 <Heading as="h2" size="lg" mt={10} mb={4}>Bonusuri</Heading>
-                <Box overflowY="auto" maxH="45vh">
+                <Flex flexDirection="row" justifyContent="space-evenly" alignItems="center" w="100%">
+                    <Box flex="1" overflowY="auto" maxH="45vh" mr={2}>
                         <Stack spacing={4}>
-                            {bonuses.filter(bonus => !bonus.aplicat).map(bonus => (
+                            {bonuses.filter(bonus => bonus.id % 2 === 1).map(bonus => (
                                 <Bonus key={bonus.id} user={user} bonus={bonus} />
                             ))}
                         </Stack>
                     </Box>
-                </Box>
+                    <Box flex="1" overflowY="auto" maxH="45vh" ml={2}>
+                        <Stack spacing={4}>
+                            {bonuses.filter(bonus => bonus.id % 2 === 0).map(bonus => (
+                                <Bonus key={bonus.id} user={user} bonus={bonus} />
+                            ))}
+                        </Stack>
+                    </Box>
+                </Flex>
+            </Box>
         </Box>
     );
 };

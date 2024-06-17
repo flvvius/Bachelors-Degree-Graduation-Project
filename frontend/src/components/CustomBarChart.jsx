@@ -20,6 +20,10 @@ const CustomBarChart = () => {
     const gridColor = useColorModeValue("#ccc", "#555");
     const tooltipBgColor = useColorModeValue("#fff", "#2D3748");
     const tooltipTextColor = useColorModeValue("black", "white");
+    const selectBgColor = useColorModeValue("gray.200", "gray.600");
+    const selectBorderColor = useColorModeValue("gray.300", "gray.600");
+    const optionBgColorSelected = useColorModeValue("gray.300", "gray.600");
+    const optionBgColorFocused = useColorModeValue("gray.200", "gray.500");
 
     const [users, setUsers] = useState([]);
     const [selectedUsers, setSelectedUsers] = useState([]);
@@ -109,7 +113,8 @@ const CustomBarChart = () => {
                         control: (provided) => ({
                             ...provided,
                             backgroundColor: bgColor,
-                            color: textColor
+                            color: textColor,
+                            borderColor: selectBorderColor
                         }),
                         singleValue: (provided) => ({
                             ...provided,
@@ -117,7 +122,7 @@ const CustomBarChart = () => {
                         }),
                         multiValue: (provided) => ({
                             ...provided,
-                            backgroundColor: bgColor
+                            backgroundColor: selectBgColor
                         }),
                         multiValueLabel: (provided) => ({
                             ...provided,
@@ -126,6 +131,11 @@ const CustomBarChart = () => {
                         menu: (provided) => ({
                             ...provided,
                             backgroundColor: bgColor
+                        }),
+                        option: (provided, state) => ({
+                            ...provided,
+                            backgroundColor: state.isSelected ? optionBgColorSelected : state.isFocused ? optionBgColorFocused : bgColor,
+                            color: textColor
                         })
                     }}
                 />

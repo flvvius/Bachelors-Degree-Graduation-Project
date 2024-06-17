@@ -112,6 +112,7 @@ const CalculPontaj = () => {
 
     return (
         <Box p={5}>
+            <Text fontSize="xx-large" textAlign="center" marginBottom={30}>Pontaj averages</Text>
             <Flex justify="space-between" alignItems="center" width="100%">
                 <Box flex="1" mr={4}>
                     <VStack spacing={3}>
