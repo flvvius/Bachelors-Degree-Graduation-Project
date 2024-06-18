@@ -162,7 +162,7 @@ const HomeAdmin = ({ user }) => {
                     </Box>
                 </Flex>
                 <Box ref={taskRef} flex="1" w="100%" maxW="800px">
-                    <Text fontSize="xx-large" mb={4} textAlign="center">Incarca un task</Text>
+                    <Text fontSize="xx-large" mb={4} textAlign="center">Incarcă un task</Text>
                     <UploadTask users={users} onSubmit={handleSubmit} />
                 </Box>
             </Flex>

@@ -90,12 +90,6 @@ const Pontaj = () => {
     }, [checkInDate, isPaused, totalPausedDuration]);
 
     useEffect(() => {
-        if (elapsedTime >= totalWorkTime) {
-            handleCheckOut();
-        }
-    }, [elapsedTime]);
-
-    useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await axios.get(`http://localhost:8080/api/pontaj/getPontajByData/${user.id}`, { withCredentials: true });
