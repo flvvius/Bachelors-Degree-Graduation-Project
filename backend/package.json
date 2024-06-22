@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@react-pdf/renderer": "^3.4.4",
     "cookie-session": "^2.1.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
@@ -10,6 +11,7 @@
     "nodemon": "^3.1.0",
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
+    "pdfkit": "^0.15.0",
     "sequelize": "^6.37.3",
     "sequelize-cli": "^6.6.2"
   }

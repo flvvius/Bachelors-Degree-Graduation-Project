@@ -3,8 +3,6 @@ const {task: TaskDB, task} = require('../models');
 const {user: UserDb} = require('../models');
 const {userTask: userTaskDB} = require('../models')
 
-// {include: [{model: userTaskDB, as: "legaturi"}]}
-
 const controller = {
 
     add: async (req, res) => {
@@ -83,7 +81,6 @@ const controller = {
         }
     },
 
-    // to do
     getEsteTaskColectiv: async (req, res) => {
 
         const id = req.params.id;
