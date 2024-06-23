@@ -1,5 +1,6 @@
 const {user: UserDb} = require('../models');
 const {userTask: UserTaskDB} = require('../models')
+const PDFDocument = require('pdfkit');
 
 
 const controller = {
@@ -109,6 +110,31 @@ const controller = {
             res.status(200).send(newUser);
         } catch (err) {
             res.status(500).send(err.message);
+        }
+    },
+
+    generareRaport: async (req, res) => {
+        try {
+            const data = await UserDb.findAll();
+
+            const doc = new PDFDocument();
+
+            res.setHeader('Content-Type', 'application/pdf');
+            res.setHeader('Content-Disposition', 'attachment; filename=generated.pdf');
+
+            doc.pipe(res);
+
+            data.forEach(item => {
+                doc.text(`ID: ${item.id}`);
+                doc.text(`Name: ${item.nume}`);
+                doc.text(`Mail: ${item.mail}`);
+                
+                doc.moveDown();
+            });
+
+            doc.end();
+        } catch (error) {
+            res.status(500).send('Error generating PDF');
         }
     },
 };

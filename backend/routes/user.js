@@ -12,6 +12,7 @@ router.get('/get/:id', userController.getUserById);
 router.get('/getByIds', userController.getUsersByIds);
 router.delete('/delete/:id', userController.deleteUser);
 router.put('/update/:id', userController.updateUser);
+router.get('/raport', userController.generareRaport);
 
 
 module.exports = router;
