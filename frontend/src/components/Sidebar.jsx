@@ -46,6 +46,9 @@ const Sidebar = () => {
           <ScrollLink to="bar-charts-1" smooth={true} duration={500} offset={-70}>
             <Button w="100%" colorScheme="blue">Bar Charts</Button>
           </ScrollLink>
+          <ScrollLink to="report" smooth={true} duration={500} offset={-70}>
+            <Button w="100%" colorScheme="blue">Reports</Button>
+          </ScrollLink>
         </VStack>
       ) : (
         <Button

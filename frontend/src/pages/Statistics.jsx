@@ -31,7 +31,7 @@ const Statistics = () => {
       <Flex p={20}>
         <CustomBarChart2 />
       </Flex>
-      <Flex p={20}>
+      <Flex p={20} id='report'>
         <Raport />
       </Flex>
     </Box>

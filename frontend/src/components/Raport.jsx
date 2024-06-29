@@ -1,6 +1,5 @@
-// components/Raport.js
 import React, { useState } from 'react';
-import { Box, Button, Flex, Select } from "@chakra-ui/react";
+import { Box, Button, Flex, Select, useToast, Heading, VStack, HStack, useColorModeValue } from "@chakra-ui/react";
 import axios from "axios";
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -8,6 +7,12 @@ import 'react-datepicker/dist/react-datepicker.css';
 const Raport = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [reportType, setReportType] = useState("month");
+  const toast = useToast();
+  const bg = useColorModeValue('gray.100', 'gray.700');
+  const color = useColorModeValue('black', 'white');
+  const buttonBg = useColorModeValue('blue.500', 'blue.300');
+  const buttonHoverBg = useColorModeValue('blue.600', 'blue.400');
+  const buttonTextColor = useColorModeValue('white', 'black');
 
   const handleDownload = async () => {
     try {
@@ -32,31 +37,56 @@ const Raport = () => {
       link.remove();
     } catch (error) {
       console.error('Error downloading PDF:', error);
+      if (error.response && error.response.status === 404) {
+        toast({
+          title: "No data found",
+          description: "No data found for the specified date range.",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: 'top-right'
+        });
+      } else {
+        toast({
+          title: "Error",
+          description: "An error occurred while downloading the report.",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: 'top-right'
+        });
+      }
     }
   };
 
   return (
-    <Box width="100%" height="400px">
-      <Flex alignItems="center" justifyContent="center" mb={4}>
-        <Select 
-          value={reportType} 
-          onChange={(e) => setReportType(e.target.value)} 
-          mr={4}
-          width="150px"
-        >
-          <option value="month">Monthly</option>
-          <option value="year">Yearly</option>
-        </Select>
-        <DatePicker
-          selected={selectedDate}
-          onChange={(date) => setSelectedDate(date)}
-          showMonthYearPicker={reportType === "month"}
-          showYearPicker={reportType === "year"}
-          dateFormat={reportType === "year" ? "yyyy" : "MM/yyyy"}
-          inline
-        />
-      </Flex>
-      <Button onClick={handleDownload} colorScheme='blue'>Download PDF</Button>
+    <Box width="100%" height="fit-content" p={8} bg={bg} color={color}>
+      <VStack spacing={8} align="center">
+        <Heading as="h1" size="xl" mb={8}>
+          Generate Report
+        </Heading>
+        <HStack spacing={4} align="center">
+          <Select 
+            value={reportType} 
+            onChange={(e) => setReportType(e.target.value)} 
+            width="150px"
+          >
+            <option value="month">Monthly</option>
+            <option value="year">Yearly</option>
+          </Select>
+          <DatePicker
+            selected={selectedDate}
+            onChange={(date) => setSelectedDate(date)}
+            showMonthYearPicker={reportType === "month"}
+            showYearPicker={reportType === "year"}
+            dateFormat={reportType === "year" ? "yyyy" : "MM/yyyy"}
+            customInput={<Button variant="outline" bg={buttonBg} color={buttonTextColor} _hover={{ bg: buttonHoverBg }}>{reportType === "year" ? selectedDate.getFullYear() : `${selectedDate.getMonth() + 1}/${selectedDate.getFullYear()}`}</Button>}
+          />
+        </HStack>
+        <Button onClick={handleDownload} bg={buttonBg} color={buttonTextColor} _hover={{ bg: buttonHoverBg }} size='lg'>
+          Download PDF
+        </Button>
+      </VStack>
     </Box>
   );
 };

@@ -1,7 +1,15 @@
-const {user: UserDb} = require('../models');
+const {user: UserDb, feedback:FeedbackDB} = require('../models');
 const {userTask: UserTaskDB} = require('../models')
+const {task: TaskDb} = require('../models')
 const PDFDocument = require('pdfkit');
+const { Op, Sequelize } = require('sequelize');
 
+const formatTime = (seconds) => {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const remainingSeconds = seconds % 60;
+    return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
+};
 
 const controller = {
 
@@ -114,29 +122,75 @@ const controller = {
     },
 
     generareRaport: async (req, res) => {
+        const { date, type } = req.query;
+    
+        if (!date || !type) {
+            return res.status(400).json({ error: 'Date and type are required parameters' });
+        }
+    
+        let startDate, endDate;
+        if (type === 'year') {
+            startDate = new Date(date, 0, 1);
+            endDate = new Date(date, 11, 31);
+        } else {
+            const [year, month] = date.split('-');
+            startDate = new Date(year, month - 1, 1);
+            endDate = new Date(year, month, 0);
+        }
+    
+        console.log(`Generating report from ${startDate} to ${endDate}`);
+    
         try {
-            const data = await UserDb.findAll();
-
+            const userData = await UserDb.findAll({
+                where: {
+                    esteAdmin: 0,
+                },
+                include: [
+                    {
+                        model: TaskDb,
+                        as: 'Tasks',
+                        where: {
+                            data_finalizare: {
+                                [Op.between]: [startDate, endDate]
+                            }
+                        },
+                        through: { attributes: [] }
+                    }
+                ]
+            });
+    
+            if (!userData.length) {
+                console.log('No data found for the specified date range');
+                return res.status(404).json({ error: 'No data found for the specified date range' });
+            }
+    
             const doc = new PDFDocument();
-
-            res.setHeader('Content-Type', 'application/pdf');
-            res.setHeader('Content-Disposition', 'attachment; filename=generated.pdf');
-
-            doc.pipe(res);
-
-            data.forEach(item => {
-                doc.text(`ID: ${item.id}`);
-                doc.text(`Name: ${item.nume}`);
-                doc.text(`Mail: ${item.mail}`);
-                
+            let buffers = [];
+            doc.on('data', buffers.push.bind(buffers));
+            doc.on('end', () => {
+                let pdfData = Buffer.concat(buffers);
+                res.writeHead(200, {
+                    'Content-Type': 'application/pdf',
+                    'Content-Disposition': 'attachment; filename=raport.pdf',
+                    'Content-Length': pdfData.length,
+                }).end(pdfData);
+            });
+    
+            doc.text(`Report for ${type === 'year' ? 'Year' : 'Month'}: ${date}`);
+            userData.forEach(user => {
+                doc.text(`Employee: ${user.nume} - ${user.mail}`);
+                user.cuantificareTimp < 0 ? doc.text(`Worked ${formatTime(Math.abs(Math.floor(user.cuantificareTimp)))} less`) : doc.text(`Worked extra ${formatTime(Math.floor(user.cuantificareTimp))}`);
+                doc.text(`Number of Tasks Finished: ${user.Tasks.length}`);
                 doc.moveDown();
             });
-
+    
             doc.end();
         } catch (error) {
-            res.status(500).send('Error generating PDF');
+            console.error('Error generating report:', error);
+            res.status(500).json({ error: 'Failed to generate report' });
         }
-    },
+    }
+    
 };
 
 module.exports = controller;
