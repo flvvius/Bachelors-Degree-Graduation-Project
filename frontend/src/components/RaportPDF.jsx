@@ -4,7 +4,7 @@ import axios from "axios";
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
-const Raport = () => {
+const RaportPDF = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [reportType, setReportType] = useState("month");
   const toast = useToast();
@@ -63,7 +63,7 @@ const Raport = () => {
     <Box width="100%" height="fit-content" p={8} bg={bg} color={color}>
       <VStack spacing={8} align="center">
         <Heading as="h1" size="xl" mb={8}>
-          Generate Report
+          Generate Report - Employee Productivity
         </Heading>
         <HStack spacing={4} align="center">
           <Select 
@@ -91,4 +91,4 @@ const Raport = () => {
   );
 };
 
-export default Raport;
+export default RaportPDF;

@@ -7,7 +7,8 @@ import CustomBarChart2 from "../components/CustomBarChart2";
 import CalculPontaj from "../components/CalculPontaj";
 import SatisfactieAngajati from "../components/SatisfactieAngajati";
 import Sidebar from "../components/Sidebar";
-import Raport from '../components/Raport';
+import RaportPDF from '../components/RaportPDF';
+import RaportExcel from '../components/RaportExcel';
 
 const Statistics = () => {
   const bg = useColorModeValue("gray.200", "gray.700");
@@ -32,7 +33,10 @@ const Statistics = () => {
         <CustomBarChart2 />
       </Flex>
       <Flex p={20} id='report'>
-        <Raport />
+        <RaportPDF />
+      </Flex>
+      <Flex p={20}>
+        <RaportExcel />
       </Flex>
     </Box>
   );

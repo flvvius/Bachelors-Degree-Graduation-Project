@@ -2,6 +2,7 @@ const {user: UserDb, feedback:FeedbackDB} = require('../models');
 const {userTask: UserTaskDB} = require('../models')
 const {task: TaskDb} = require('../models')
 const PDFDocument = require('pdfkit');
+const ExcelJS = require('exceljs');
 const { Op, Sequelize } = require('sequelize');
 
 const formatTime = (seconds) => {
@@ -176,7 +177,9 @@ const controller = {
                 }).end(pdfData);
             });
     
-            doc.text(`Report for ${type === 'year' ? 'Year' : 'Month'}: ${date}`);
+            doc.fontSize(20).text('Employee Report', { align: 'center' }).moveDown(1.5);
+            doc.fontSize(14).text(`Report for ${type === 'year' ? 'Year' : 'Month'}: ${date}`).moveDown(1.5);
+
             userData.forEach(user => {
                 doc.text(`Employee: ${user.nume} - ${user.mail}`);
                 user.cuantificareTimp < 0 ? doc.text(`Worked ${formatTime(Math.abs(Math.floor(user.cuantificareTimp)))} less`) : doc.text(`Worked extra ${formatTime(Math.floor(user.cuantificareTimp))}`);
@@ -185,6 +188,99 @@ const controller = {
             });
     
             doc.end();
+        } catch (error) {
+            console.error('Error generating report:', error);
+            res.status(500).json({ error: 'Failed to generate report' });
+        }
+    },
+
+    generareRaportExcel: async (req, res) => {
+        const { date, type } = req.query;
+    
+        if (!date || !type) {
+            return res.status(400).json({ error: 'Date and type are required parameters' });
+        }
+    
+        let startDate, endDate;
+        if (type === 'year') {
+            startDate = new Date(date, 0, 1);
+            endDate = new Date(date, 11, 31);
+        } else {
+            const [year, month] = date.split('-');
+            startDate = new Date(year, month - 1, 1);
+            endDate = new Date(year, month, 0);
+        }
+    
+        const formattedStartDate = startDate.toISOString().split('T')[0];
+        const formattedEndDate = endDate.toISOString().split('T')[0];
+    
+        console.log(`Generating report from ${startDate.toISOString()} to ${endDate.toISOString()}`);
+    
+        try {
+            const userData = await UserDb.findAll({
+                where: {
+                    esteAdmin: 0,
+                },
+                attributes: [
+                    'id', 'nume', 'mail',
+                    [Sequelize.fn('AVG', Sequelize.col('ReceivedFeedbacks.nota')), 'averageNota']
+                ],
+                include: [
+                    {
+                        model: FeedbackDB,
+                        as: 'ReceivedFeedbacks',
+                        attributes: [],
+                        where: {
+                            data: {
+                                [Op.between]: [startDate, endDate]
+                            }
+                        },
+                        required: false //LEFT JOIN
+                    }
+                ],
+                group: ['User.id']
+            });
+    
+            console.log(`Fetched user data: ${JSON.stringify(userData, null, 2)}`);
+    
+            if (!userData.length) {
+                console.log('No data found for the specified date range');
+                return res.status(404).json({ error: 'No data found for the specified date range' });
+            }
+    
+            const workbook = new ExcelJS.Workbook();
+            const worksheet = workbook.addWorksheet('Report');
+    
+            worksheet.mergeCells('A1:C1');
+            worksheet.getCell('A1').value = `Report Date Range: ${formattedStartDate} to ${formattedEndDate}`;
+            worksheet.getCell('A1').font = { bold: true };
+            worksheet.addRow([]);
+    
+            worksheet.addRow(['Employee Name', 'Email', 'Average Feedback']);
+            
+            worksheet.columns = [
+                { key: 'name', width: 30 },
+                { key: 'email', width: 30 },
+                { key: 'averageFeedback', width: 20 },
+            ];
+    
+            userData.forEach(user => {
+                const averageNota = user.dataValues.averageNota !== null ? parseFloat(user.dataValues.averageNota).toFixed(2) : 'No Feedback';
+                worksheet.addRow({
+                    name: user.nume,
+                    email: user.mail,
+                    averageFeedback: averageNota
+                });
+            });
+    
+            const buffer = await workbook.xlsx.writeBuffer();
+    
+            res.writeHead(200, {
+                'Content-Disposition': 'attachment; filename=report.xlsx',
+                'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'Content-Length': buffer.length
+            });
+            res.end(buffer);
         } catch (error) {
             console.error('Error generating report:', error);
             res.status(500).json({ error: 'Failed to generate report' });

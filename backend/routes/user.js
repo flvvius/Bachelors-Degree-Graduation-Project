@@ -13,6 +13,7 @@ router.get('/getByIds', userController.getUsersByIds);
 router.delete('/delete/:id', userController.deleteUser);
 router.put('/update/:id', userController.updateUser);
 router.get('/raport', userController.generareRaport);
+router.get('/raportExcel', userController.generareRaportExcel);
 
 
 module.exports = router;

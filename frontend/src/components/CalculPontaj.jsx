@@ -91,14 +91,14 @@ const CalculPontaj = () => {
             setOverallCheckIn(null);
         }
 
-        const validMedieCheckOuts = Object.values(medieCheckOut).filter(time => time !== null).map(time => time.getTime());
+        const validMedieCheckOuts = Object.values(mediePontajeCheckOut).filter(time => time !== null).map(time => time.getTime());
         if (validMedieCheckOuts.length > 0) {
             const meanOfMeansCheckOut = validMedieCheckOuts.reduce((acc, time) => acc + time, 0) / validMedieCheckOuts.length;
             setOverallCheckOut(new Date(meanOfMeansCheckOut));
         } else {
             setOverallCheckOut(null);
         }
-    }, [pontaje]);
+    }, [pontaje, users]);
 
     const handleUserChange = (event) => {
         const userId = event.target.value;
