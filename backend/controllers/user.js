@@ -4,6 +4,7 @@ const {task: TaskDb} = require('../models')
 const PDFDocument = require('pdfkit');
 const ExcelJS = require('exceljs');
 const { Op, Sequelize } = require('sequelize');
+const nodemailer = require('nodemailer');
 
 const formatTime = (seconds) => {
     const hours = Math.floor(seconds / 3600);
@@ -285,7 +286,37 @@ const controller = {
             console.error('Error generating report:', error);
             res.status(500).json({ error: 'Failed to generate report' });
         }
-    }
+    },
+
+    trimiteEmail: async (req, res) => {
+
+        const { email, subject, text } = req.body;
+
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+              user: process.env.EMAIL,
+              pass: process.env.EMAIL_PASSWORD,
+            },
+        });
+
+        const mailOptions = {
+            from: process.env.EMAIL,
+            to: email,
+            subject: subject,
+            text: text,
+        };
+
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+              console.log(error);
+              res.status(500).send('Error sending email');
+            } else {
+              console.log('Email sent: ' + info.response);
+              res.status(200).send('Email sent');
+            }
+        });
+    },
     
 };
 

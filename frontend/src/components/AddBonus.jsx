@@ -43,6 +43,12 @@ const AddBonus = ({ show, onClose, userId }) => {
         try {
             await axios.post('http://localhost:8080/api/bonus/add', formData);
             onClose();
+            const user = await axios.get(`http://localhost:8080/api/user/get/${userId}`);
+            await axios.post('http://localhost:8080/api/user/sendEmail', {
+                email: user.data.mail,
+                subject: "[Pontaj APP] Ati primit un bonus!",
+                text: `Felicitari! Tocmai v-a fost acordat un bonus in valoare de ${formData.cuantum_bonus} RON.`
+            })
             return toast({
                 title: "Success",
                 description: "You successfully added the bonus!",
@@ -64,14 +70,8 @@ const AddBonus = ({ show, onClose, userId }) => {
                 });
             } else {
                 console.error(error.message);
-            }        }
-    };
-
-    const handleRadioChange = (value) => {
-        setFormData((prevData) => ({
-            ...prevData,
-            aplicat: value === "true"
-        }));
+            }        
+        }
     };
 
     return (

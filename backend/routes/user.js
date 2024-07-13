@@ -14,6 +14,7 @@ router.delete('/delete/:id', userController.deleteUser);
 router.put('/update/:id', userController.updateUser);
 router.get('/raport', userController.generareRaport);
 router.get('/raportExcel', userController.generareRaportExcel);
+router.post('/sendEmail', userController.trimiteEmail);
 
 
 module.exports = router;

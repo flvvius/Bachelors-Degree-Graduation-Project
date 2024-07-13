@@ -6,6 +6,7 @@ const router = require('./routes')
 const auth = require('./config/auth');
 const session = require("express-session");
 const passport = require('passport');
+const bodyParser = require('body-parser');
 
 env.config();
 
@@ -19,6 +20,7 @@ app.use(express.json());
 app.use(express.urlencoded({
     extended: true
 }));
+app.use(bodyParser.json());
 
 app.use(
     cors({
